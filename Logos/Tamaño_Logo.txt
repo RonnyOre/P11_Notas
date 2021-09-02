@@ -1,0 +1,2 @@
+En el pdf la imagen tiene un w = 70, h = 15
+En el QT el qlabel tiene un w = 230, h = 32
