@@ -9,7 +9,6 @@ from PyQt5.QtGui import *
 from diccionario_sunat import *
 import urllib.request
 from PyQt5 import *
-from funciones_4everyboby import *
 
 import pathlib
 import smtplib
@@ -25,9 +24,9 @@ TipComprobante={'FACTURA':'1','BOLETA':'2','NOTA DE CRÉDITO':'3','NOTA DE DÉBI
 porcentaje_de_igv=18.00
 rutaBase=os.getcwd()
 
-# db=mysql.connector.connect(host="67.23.254.35",user="multipla_admin",passwd="multiplay123",database="multipla_pruebas")
-#
-# url = 'https://www.multiplay.com.pe/consultas/consulta-prueba.php'
+db=mysql.connector.connect(host="67.23.254.35",user="multipla_admin",passwd="multiplay123",database="multipla_pruebas")
+
+url = 'https://www.multiplay.com.pe/consultas/consulta-prueba.php'
 rutaFacturacion="https://api.nubefact.com/api/v1/bad6db4a-3f1c-4f93-b364-bcd30093df5f"
 tokenFacturacion="c3992ada327745ac9034af1af4ab879ff6119a5d8d1b46ab8404069fadee556a"
 
