@@ -401,7 +401,6 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.leURL.setReadOnly(True)
 
         self.leSerie_Numero.setReadOnly(True)
-        self.leEstado.setReadOnly(True)
         self.leRazon_Social.setReadOnly(True)
         self.leDireccion.setReadOnly(True)
         self.leRUC.setReadOnly(True)
@@ -409,13 +408,14 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.leDNI.setReadOnly(True)
         self.leCorreo.setReadOnly(False)
 
-        self.cbTipo_Operacion.setEnabled(False)
+        bloquearCb(self.cbTipo_Operacion)
         self.leForma_Pago.setReadOnly(True)
         self.leMoneda.setReadOnly(True)
         self.leTipo_Cambio.setReadOnly(True)
 
         self.leSub_Total.setReadOnly(True)
         self.leDescuento_Item.setReadOnly(True)
+        self.leDescuento_Global.setEnabled(False)
         self.leTotal_SinIGV.setReadOnly(True)
         self.leIGV.setReadOnly(True)
         self.leTotal.setReadOnly(True)
@@ -441,9 +441,9 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.leEstado_Documento.clear()
         self.leURL.clear()
         self.cbMotivo.setCurrentIndex(-1)
+        self.cbMotivo.setEnabled(True)
 
         self.leSerie_Numero.clear()
-        self.leEstado.clear()
         self.leRazon_Social.clear()
         self.leDireccion.clear()
         self.leRUC.clear()
@@ -458,7 +458,6 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.leSub_Total.clear()
         self.leDescuento_Item.clear()
         self.leDescuento_Global.clear()
-        self.leDescuento_Global.setEnabled(True)
         self.leTotal_SinIGV.clear()
         self.leIGV.clear()
         self.leTotal.clear()
@@ -506,7 +505,7 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def CargarFacturacion(self):
         try:
-            sqlCabFact='''SELECT a.Estado_Factura, b.Razon_social,b.Direcc_cliente,b.RUC,b.Representante_Cliente,b.DNI,b.Correo_Representante,a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global
+            sqlCabFact='''SELECT b.Razon_social,b.Direcc_cliente,b.RUC,b.Representante_Cliente,b.DNI,b.Correo_Representante,a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global
             FROM TAB_VENTA_009_Cabecera_Facturacion a
             LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
             LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
@@ -529,25 +528,29 @@ class ERP_Facturacion_Notas(QMainWindow):
             if Nro_Facturacion!=None:
                 bloquearCb(self.cbTipo_Nota)
                 bloquearCb(self.cbSerie)
-                bloquearCb(self.cbTipo_Operacion)
-                bloquearLe(self.leDescuento_Global)
+                self.leNumero.clear()
+                self.leFecha_Emision.clear()
+                self.leEstado_Documento.clear()
+                self.leEstado_Documento.setStyleSheet("")
+                self.leEstado_Documento.setStyleSheet("background-color: rgb(255,255,255);")
+                self.leURL.clear()
+                self.cbMotivo.setEnabled(True)
+                self.cbMotivo.setCurrentIndex(-1)
+                self.leDescuento_Global.clear()
                 self.leDescuento_Global_Soles.clear()
+                self.cbTipo_Operacion.setEditable(False)
                 self.leSerie_Numero.setText(Serie+"-"+Nro_Facturacion)
-                self.leEstado.setStyleSheet("")
-                self.leEstado.setStyleSheet("background-color: rgb(255,255,255);")
                 self.botones()
 
-
-            self.leEstado.setText(EstadoFactura[lista[0]])
-            self.leRazon_Social.setText(lista[1])
-            self.leDireccion.setText(lista[2])
-            self.leRUC.setText(lista[3])
-            self.leInterlocutor.setText(lista[4])
-            self.leDNI.setText(lista[5])
-            self.leCorreo.setText(lista[6])
+            self.leRazon_Social.setText(lista[0])
+            self.leDireccion.setText(lista[1])
+            self.leRUC.setText(lista[2])
+            self.leInterlocutor.setText(lista[3])
+            self.leDNI.setText(lista[4])
+            self.leCorreo.setText(lista[5])
 
             for k,v in dict_sunat_transaction.items():
-                if int(lista[7])==v:
+                if int(lista[6])==v:
                     self.cbTipo_Operacion.setEditable(True)
                     font = QtGui.QFont()
                     font.setPointSize(11)
@@ -555,30 +558,17 @@ class ERP_Facturacion_Notas(QMainWindow):
                     le.setFont(font)
                     self.cbTipo_Operacion.setCurrentText(k)
 
-            self.leForma_Pago.setText(FormaPago[lista[8]])
-            if FormaPago[lista[8]]=='CRÉDITO':
+            self.leForma_Pago.setText(FormaPago[lista[7]])
+            if FormaPago[lista[7]]=='CRÉDITO':
                 self.pbVerCuotas.setEnabled(True)
             else:
                 self.pbVerCuotas.setEnabled(False)
 
-            self.leMoneda.setText(lista[9])
+            self.leMoneda.setText(lista[8])
 
-            if lista[10]=='0.00':
-                lista[10]=""
-            self.leDescuento_Global.setText(formatearDecimal(lista[10],'2'))
-
-            # if Cod_Soc=='1000':
-            #     if lista[0]=="1":
-            #         self.pbConsulta_Anulacion.setEnabled(True)
-            #
-            #     elif lista[0]=="3":
-            #         if lista[8]=="":
-            #             self.pbEnviar_SUNAT.setEnabled(True)
-            #         else:
-            #             self.pbAbrirPDF.setEnabled(True)
-            #             self.pbAnular_Factura.setEnabled(True)
-            # else:
-            #     self.pbImprimir.setEnabled(True)
+            if lista[9]=='0.00':
+                lista[9]=""
+            self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
 
             CargarFact(sqlDetFact,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()
@@ -607,7 +597,7 @@ class ERP_Facturacion_Notas(QMainWindow):
                 Tipo_Comprobante=TipNota[tipo_nota]
 
                 Num=self.leSerie_Numero.text()
-                Nro_Cotización=Num[Num.find("-")+2:]
+                Nro_Cotización=Num[Num.find("-")+1:]
 
                 Cod_Cliente=dicCliente[self.leRazon_Social.text()]
 
@@ -708,9 +698,7 @@ class ERP_Facturacion_Notas(QMainWindow):
         Tipnota=self.cbTipo_Nota.currentText()
         Serienota=self.cbSerie.currentText()
         if len(Tipnota)!=0 and len(Serienota)!=0:
-            for k,v in TipNota.items():
-                if Tipnota==v:
-                    TipoNota=k
+            TipoNota=TipNota[Tipnota]
             SeleccionarNota(TipoNota,Serienota).exec_()
             self.CargarNota()
         elif len(Tipnota)!=0 and len(Serienota)==0:
@@ -720,16 +708,17 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def CargarNota(self):
         try:
-            Tipnota=self.cbTipo_Nota.currentText()
-            for k,v in TipNota.items():
-                if Tipnota==v:
-                    TipoNota=k
-            sqlCabNota="SELECT a.Fecha_Emision,a.Estado_Factura, a.Nro_Cotización, a.Estado_Cotizacion, a.Motivo_Nota, b.Razon_social, a.RUC,a.Interlocutor,a.DNI,a.Correo,a.Forma_Pago,c.Descrip_moneda,a.URL FROM TAB_VENTA_009_Cabecera_Facturacion a LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'"%(Cod_Soc,Año,TipoNota, SerieNota,NroNota)
+            TipoNota=TipNota[self.cbTipo_Nota.currentText()]
+            sqlCabNota='''SELECT a.Fecha_Emision,a.Estado_Factura,a.URL,a.Nro_Cotización, a.Motivo_Nota,b.Razon_social,b.Direcc_cliente,b.RUC,b.Representante_Cliente,b.DNI,b.Correo_Representante,a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global
+            FROM TAB_VENTA_009_Cabecera_Facturacion a
+            LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
+            LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoNota, SerieNota,NroNota)
             lista=convlist(sqlCabNota)
 
             sqlDetNota='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_sin_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
             FROM TAB_VENTA_010_Detalle_Facturacion a
-            LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Mat=a.Cod_Material
+            LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Soc=a.Cod_Soc AND b.Cod_Mat=a.Cod_Material
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
@@ -740,14 +729,13 @@ class ERP_Facturacion_Notas(QMainWindow):
                 if lista[i]=='0':
                     lista[i]=""
 
-            if Nro_Facturacion!=None:
-                bloquearCb(self.cbTipo_Comprobante)
+            if SerieNota!=None and NroNota!=None:
+                bloquearCb(self.cbTipo_Nota)
                 bloquearCb(self.cbSerie)
-                self.deFecha_Vencimiento.setEnabled(False)
+                bloquearCb(self.cbMotivo)
                 bloquearCb(self.cbTipo_Operacion)
                 bloquearLe(self.leDescuento_Global)
                 self.leDescuento_Global_Soles.clear()
-                self.leNumero.setText(Nro_Facturacion)
                 self.leEstado_Documento.setStyleSheet("")
                 self.leEstado_Documento.setStyleSheet("background-color: rgb(255,255,255);")
                 self.botones()
@@ -755,86 +743,71 @@ class ERP_Facturacion_Notas(QMainWindow):
             self.leNumero.setText(NroNota)
             self.leFecha_Emision.setText(formatearFecha(lista[0]))
             self.leEstado_Documento.setText(EstadoFactura[lista[1]])
-            self.leURL.setText(lista[12])
+            self.leURL.setText(lista[2])
 
-            self.leSerie_Numero.setText(SerieNota+"-"+lista[2])
-            self.leEstado.setText(EstadoFactura[lista[3]])
+            self.leSerie_Numero.setText(SerieNota+"-"+lista[3])
             self.cbMotivo.setCurrentIndex(int(lista[4])-1)
 
             self.leRazon_Social.setText(lista[5])
-            self.leRUC.setText(lista[6])
-            self.leInterlocutor.setText(lista[7])
-            self.leDNI.setText(lista[8])
-            self.leCorreo.setText(lista[9])
-            if lista[10]!='':
-                self.cbForma_Pago.setCurrentIndex(int(lista[10])-1)
-            else:
-                self.cbForma_Pago.setCurrentIndex(-1)
-            self.leMoneda.setText(lista[11])
+            self.leDireccion.setText(lista[6])
+            self.leRUC.setText(lista[7])
+            self.leInterlocutor.setText(lista[8])
+            self.leDNI.setText(lista[9])
+            self.leCorreo.setText(lista[10])
 
-            if Cod_Soc=='1000':
+            for k,v in dict_sunat_transaction.items():
+                if int(lista[11])==v:
+                    self.cbTipo_Operacion.setEditable(True)
+                    font = QtGui.QFont()
+                    font.setPointSize(11)
+                    le = self.cbTipo_Operacion.lineEdit()
+                    le.setFont(font)
+                    self.cbTipo_Operacion.setCurrentText(k)
+
+            self.leForma_Pago.setText(FormaPago[lista[12]])
+            if FormaPago[lista[12]]=='CRÉDITO':
+                self.pbVerCuotas.setEnabled(True)
+            else:
+                self.pbVerCuotas.setEnabled(False)
+
+            self.leMoneda.setText(lista[13])
+
+            if lista[14]=='0.00':
+                lista[14]=""
+            self.leDescuento_Global.setText(formatearDecimal(lista[14],'2'))
+
+            if Cod_Soc=='1000'and self.cbSerie.currentText()!='0001':
+
+                self.pbImprimir.setEnabled(False)
+
                 if lista[1]=="1":
                     self.leEstado_Documento.setStyleSheet("color: rgb(255,130,130);\n""background-color: rgb(255,255,255);")
                     self.pbConsulta_Anulacion.setEnabled(True)
 
                 elif lista[1]=="3":
-                    if lista[12]=="":
+                    if lista[2]=="":
                         self.pbEnviar_SUNAT.setEnabled(True)
                     else:
                         self.pbAbrirPDF.setEnabled(True)
                         self.pbAnular_Factura.setEnabled(True)
-            else:
+
+            elif Cod_Soc=='1000'and self.cbSerie.currentText()=='0001':
+
                 self.pbImprimir.setEnabled(True)
 
+                if lista[1]=="1":
+                    self.leEstado_Documento.setStyleSheet("color: rgb(255,130,130);\n""background-color: rgb(255,255,255);")
+                    self.pbConsulta_Anulacion.setEnabled(True)
+
+                elif lista[1]=="3":
+                    if lista[2]=="":
+                        self.pbEnviar_SUNAT.setEnabled(True)
+                    else:
+                        self.pbAbrirPDF.setEnabled(True)
+                        self.pbAnular_Factura.setEnabled(True)
+
             CargarFact(sqlDetNota,self.tbwCotizacion_Cliente,self)
-
-            list_cantidad = []
-            list_precio_sinIGV  = []
-            list_descuento_sinIGV= []
-
-            for i in range(self.tbwCotizacion_Cliente.rowCount()):
-                try:
-                    list_cantidad.append(self.tbwCotizacion_Cliente.item(i,5).text())
-                except:
-                    list_cantidad.append("BLANCO")
-                try:
-                    list_precio_sinIGV.append(self.tbwCotizacion_Cliente.item(i,6).text())
-                except:
-                    list_precio_sinIGV.append("BLANCO")
-                try:
-                    desc=self.tbwCotizacion_Cliente.item(i,8).text()
-                    d = desc.replace(",","")
-                    list_descuento_sinIGV.append(float(d))
-                except:
-                    list_descuento_sinIGV.append("BLANCO")
-
-            list_cantxprecio = []
-            for i in range(len(list_cantidad)):
-                c = list_cantidad[i].replace(",","")
-                p = list_precio_sinIGV[i].replace(",","")
-                cant_x_precio= float(c) * float(p)
-                list_cantxprecio.append(cant_x_precio)
-                # list_cantxprecio.append(formatearDecimal(str(cant_x_precio),'3'))
-                i += 1
-
-            TipoCambio=self.leTipo_Cambio.text()
-            Subtotal=sum(list_cantxprecio)
-            DescuentoTotal=sum(list_descuento_sinIGV)
-            TotalsinIGV=Subtotal-DescuentoTotal
-            IGV=0.18*TotalsinIGV
-            Total=TotalsinIGV+IGV
-
-            self.leSub_Total.setText(formatearDecimal(str(Subtotal),'2'))
-            self.leDescuento_Total.setText(formatearDecimal(str(DescuentoTotal),'2'))
-            self.leTotal_SinIGV.setText(formatearDecimal(str(TotalsinIGV),'2'))
-            self.leIGV.setText(formatearDecimal(str(IGV),'2'))
-            self.leTotal.setText(formatearDecimal(str(Total),'2'))
-
-            self.leSub_Total_Soles.setText(formatearDecimal(str(Subtotal*float(TipoCambio)),'2'))
-            self.leDescuento_Total_Soles.setText(formatearDecimal(str(DescuentoTotal*float(TipoCambio)),'2'))
-            self.leTotal_SinIGV_Soles.setText(formatearDecimal(str(TotalsinIGV*float(TipoCambio)),'2'))
-            self.leIGV_Soles.setText(formatearDecimal(str(IGV*float(TipoCambio)),'2'))
-            self.leTotal_Soles.setText(formatearDecimal(str(Total*float(TipoCambio)),'2'))
+            self.cargarMontos()
 
         except Exception as e:
             print(e)
