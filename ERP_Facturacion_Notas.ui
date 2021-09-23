@@ -179,12 +179,16 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <family>MS Shell Dlg 2</family>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <italic>false</italic>
+            <bold>false</bold>
            </font>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;
+font: 11pt &quot;MS Shell Dlg 2&quot;;
 </string>
           </property>
           <property name="insertPolicy">
@@ -205,12 +209,16 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <family>MS Shell Dlg 2</family>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <italic>false</italic>
+            <bold>false</bold>
            </font>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="insertPolicy">
            <enum>QComboBox::NoInsert</enum>
@@ -233,7 +241,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -357,7 +365,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -417,7 +425,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -462,7 +470,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -522,12 +530,16 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <family>MS Shell Dlg 2</family>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <italic>false</italic>
+            <bold>false</bold>
            </font>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="insertPolicy">
            <enum>QComboBox::NoInsert</enum>
@@ -571,7 +583,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -663,7 +675,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -720,7 +732,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -828,7 +840,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -873,7 +885,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -936,7 +948,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -999,7 +1011,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -1023,7 +1035,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
        <widget class="QTableWidget" name="tbwCotizacion_Cliente">
         <property name="font">
          <font>
-          <pointsize>12</pointsize>
+          <pointsize>11</pointsize>
          </font>
         </property>
         <property name="styleSheet">
@@ -1068,7 +1080,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1080,7 +1092,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1092,7 +1104,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1104,7 +1116,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1116,7 +1128,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1128,7 +1140,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1140,7 +1152,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1152,7 +1164,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1164,7 +1176,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1176,7 +1188,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1188,7 +1200,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1200,7 +1212,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1212,7 +1224,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1224,7 +1236,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1236,7 +1248,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -1248,7 +1260,7 @@ background-color: rgb(255, 213, 79);
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
