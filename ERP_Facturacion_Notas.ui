@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1155</width>
-    <height>750</height>
+    <width>1148</width>
+    <height>696</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,20 +26,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>852</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="0" column="2" rowspan="2">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>598</height>
+        <height>15</height>
        </size>
       </property>
      </spacer>
@@ -151,7 +138,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
-          <height>20</height>
+          <height>13</height>
          </size>
         </property>
        </spacer>
@@ -169,7 +156,7 @@
          <widget class="QLabel" name="label_4">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -187,7 +174,7 @@
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>25</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -213,7 +200,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>25</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -236,12 +223,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         <item>
          <widget class="QLineEdit" name="leNumero">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
             <width>150</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -287,6 +274,38 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="pbLimpiar">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>26</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>33</width>
+            <height>26</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Limpiar</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 213, 79);</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_9">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -306,7 +325,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_16">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -322,18 +341,18 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         <item>
          <widget class="QLineEdit" name="leFecha_Emision">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="minimumSize">
            <size>
             <width>130</width>
-            <height>0</height>
+            <height>24</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>130</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -366,7 +385,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_20">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -382,7 +401,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         <item>
          <widget class="QLineEdit" name="leEstado_Documento">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="minimumSize">
            <size>
@@ -393,7 +412,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="maximumSize">
            <size>
             <width>150</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -417,7 +436,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_25">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -434,6 +453,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLineEdit" name="leURL">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>24</height>
+           </size>
           </property>
           <property name="font">
            <font>
@@ -458,11 +483,59 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>300</width>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_27">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+          </property>
+          <property name="text">
+           <string>Motivo de Nota</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cbMotivo">
+          <property name="minimumSize">
+           <size>
+            <width>320</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);
+font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+          </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::NoInsert</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContents</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -472,7 +545,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -488,12 +561,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         <item>
          <widget class="QLineEdit" name="leSerie_Numero">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="maximumSize">
            <size>
             <width>150</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -544,11 +617,11 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Expanding</enum>
+           <enum>QSizePolicy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>20</width>
             <height>20</height>
            </size>
           </property>
@@ -558,7 +631,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_33">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -574,7 +647,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         <item>
          <widget class="QLineEdit" name="leEstado">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="minimumSize">
            <size>
@@ -585,7 +658,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="maximumSize">
            <size>
             <width>150</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -606,65 +679,22 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>20</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_27">
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-          </property>
-          <property name="text">
-           <string>Motivo de Nota</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cbMotivo">
-          <property name="minimumSize">
-           <size>
-            <width>320</width>
-            <height>25</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-          </property>
-          <property name="insertPolicy">
-           <enum>QComboBox::NoInsert</enum>
-          </property>
-          <property name="sizeAdjustPolicy">
-           <enum>QComboBox::AdjustToContents</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_15">
-        <item>
          <widget class="QLabel" name="label_18">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -682,9 +712,60 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>24</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_15">
+        <item>
+         <widget class="QLabel" name="label_37">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+          </property>
+          <property name="text">
+           <string>Dirección</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="leDireccion">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="styleSheet">
@@ -715,7 +796,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_26">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -742,7 +823,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="maximumSize">
            <size>
             <width>150</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -766,7 +847,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_8">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -783,6 +864,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLineEdit" name="leInterlocutor">
           <property name="enabled">
            <bool>true</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>24</height>
+           </size>
           </property>
           <property name="font">
            <font>
@@ -817,7 +904,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_15">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -844,7 +931,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="maximumSize">
            <size>
             <width>120</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -880,7 +967,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <widget class="QLabel" name="label_5">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -907,7 +994,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>16777215</height>
+            <height>24</height>
            </size>
           </property>
           <property name="font">
@@ -931,19 +1018,6 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_19">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <widget class="QTableWidget" name="tbwCotizacion_Cliente">
@@ -1183,19 +1257,6 @@ background-color: rgb(255, 213, 79);
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_23">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
        <widget class="Line" name="line_4">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -1203,16 +1264,63 @@ background-color: rgb(255, 213, 79);
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="0" colspan="2">
+            <item row="0" column="0" colspan="3">
+             <widget class="QLabel" name="label_35">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+              </property>
+              <property name="text">
+               <string>Tipo de Operación</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QComboBox" name="cbTipo_Operacion">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>MS Shell Dlg 2</family>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(255, 255, 255);
+font: 11pt &quot;MS Shell Dlg 2&quot;;
+</string>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QComboBox::AdjustToContents</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" colspan="3">
              <widget class="QLabel" name="label_9">
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>11</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -1225,60 +1333,84 @@ background-color: rgb(255, 213, 79);
               </property>
              </widget>
             </item>
-            <item row="0" column="2">
-             <widget class="QComboBox" name="cbForma_Pago">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);
-font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-              </property>
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-              <property name="sizeAdjustPolicy">
-               <enum>QComboBox::AdjustToContents</enum>
-              </property>
-             </widget>
+            <item row="1" column="3">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLineEdit" name="leForma_Pago">
+                <property name="minimumSize">
+                 <size>
+                  <width>160</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(255, 255, 255);</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pbVerCuotas">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>110</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Ver Cuotas</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(255, 213, 79);</string>
+                </property>
+                <property name="text">
+                 <string>Ver Cuotas</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_27">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
-            <item row="0" column="3">
-             <widget class="QLineEdit" name="leForma_Pago">
-              <property name="minimumSize">
-               <size>
-                <width>250</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>250</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(255, 255, 255);</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label_17">
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>11</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -1291,35 +1423,44 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1" colspan="3">
+            <item row="2" column="1" colspan="3">
              <widget class="QLineEdit" name="leMoneda">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>200</width>
-                <height>0</height>
+                <height>24</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
                 <width>200</width>
-                <height>16777215</height>
+                <height>24</height>
                </size>
               </property>
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(255, 255, 255);</string>
               </property>
+              <property name="text">
+               <string/>
+              </property>
              </widget>
             </item>
-            <item row="2" column="0" colspan="2">
+            <item row="3" column="0" colspan="2">
              <widget class="QLabel" name="label_11">
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>11</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -1332,23 +1473,29 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="2" colspan="2">
+            <item row="3" column="2" colspan="2">
              <widget class="QLineEdit" name="leTipo_Cambio">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
-                <width>200</width>
-                <height>0</height>
+                <width>160</width>
+                <height>24</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>200</width>
-                <height>16777215</height>
+                <width>100</width>
+                <height>24</height>
                </size>
               </property>
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="styleSheet">
@@ -1378,6 +1525,9 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1388,41 +1538,11 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="4">
-           <widget class="QLineEdit" name="leDescuento_Total_Soles">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_14">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="leTotal_SinIGV">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label_13">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1431,15 +1551,15 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
             </property>
             <property name="text">
-             <string>S/.</string>
+             <string>Sub Total</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_24">
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_28">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1448,15 +1568,15 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
             </property>
             <property name="text">
-             <string>Total sin IGV</string>
+             <string>$</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
-           <widget class="QLineEdit" name="leSub_Total_Soles">
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="leSub_Total">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="styleSheet">
@@ -1471,7 +1591,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
            <widget class="QLabel" name="label_12">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1484,11 +1604,11 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="QLineEdit" name="leSub_Total">
+          <item row="0" column="4">
+           <widget class="QLineEdit" name="leSub_Total_Soles">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="styleSheet">
@@ -1499,28 +1619,11 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_14">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-            </property>
-            <property name="text">
-             <string>Sub Total</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1529,15 +1632,113 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
             </property>
             <property name="text">
-             <string>Descuento Total</string>
+             <string>Descuento por Item</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_29">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>$</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLineEdit" name="leDescuento_Total">
+           <widget class="QLineEdit" name="leDescuento_Item">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLabel" name="label_13">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>S/.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QLineEdit" name="leDescuento_Item_Soles">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>Descuento Global</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_34">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>$</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="leDescuento_Global">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="styleSheet">
@@ -1549,10 +1750,10 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QLabel" name="label_23">
+           <widget class="QLabel" name="label_36">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1565,11 +1766,26 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_19">
+          <item row="2" column="4">
+           <widget class="QLineEdit" name="leDescuento_Global_Soles">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_24">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1578,15 +1794,32 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
             </property>
             <property name="text">
-             <string>IGV 18%</string>
+             <string>Total sin IGV</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="label_30">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>$</string>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QLineEdit" name="leIGV">
+           <widget class="QLineEdit" name="leTotal_SinIGV">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="styleSheet">
@@ -1594,46 +1827,14 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QLineEdit" name="leTotal_SinIGV_Soles">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-            </property>
-            <property name="text">
-             <string>Total</string>
             </property>
            </widget>
           </item>
           <item row="3" column="3">
-           <widget class="QLabel" name="label_21">
+           <widget class="QLabel" name="label_23">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1647,10 +1848,59 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
            </widget>
           </item>
           <item row="3" column="4">
-           <widget class="QLineEdit" name="leIGV_Soles">
+           <widget class="QLineEdit" name="leTotal_SinIGV_Soles">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>IGV 18%</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLabel" name="label_31">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>$</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLineEdit" name="leIGV">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="styleSheet">
@@ -1662,10 +1912,10 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
            </widget>
           </item>
           <item row="4" column="3">
-           <widget class="QLabel" name="label_22">
+           <widget class="QLabel" name="label_21">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1679,10 +1929,10 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
            </widget>
           </item>
           <item row="4" column="4">
-           <widget class="QLineEdit" name="leTotal_Soles">
+           <widget class="QLineEdit" name="leIGV_Soles">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="styleSheet">
@@ -1693,26 +1943,11 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="QLineEdit" name="leTotal">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_10">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_28">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1721,66 +1956,15 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
             </property>
             <property name="text">
-             <string>$</string>
+             <string>Total</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_29">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-            </property>
-            <property name="text">
-             <string>$</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_30">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-            </property>
-            <property name="text">
-             <string>$</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLabel" name="label_31">
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-            </property>
-            <property name="text">
-             <string>$</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QLabel" name="label_32">
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>11</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -1790,6 +1974,53 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
             </property>
             <property name="text">
              <string>$</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QLineEdit" name="leTotal">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="3">
+           <widget class="QLabel" name="label_22">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+            </property>
+            <property name="text">
+             <string>S/.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="4">
+           <widget class="QLineEdit" name="leTotal_Soles">
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
@@ -1812,7 +2043,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
-          <height>20</height>
+          <height>13</height>
          </size>
         </property>
        </spacer>
@@ -1834,6 +2065,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pbGrabar">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -1864,6 +2101,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pbEnviar_SUNAT">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -1894,6 +2137,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pbAbrirPDF">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -1924,6 +2173,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pbAnular_Factura">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -1954,6 +2209,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pbConsulta_Anulacion">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -1984,6 +2245,12 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pbImprimir">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>26</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>12</pointsize>
@@ -2046,6 +2313,19 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
       </item>
      </layout>
     </item>
+    <item row="1" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>598</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="2" column="1">
      <spacer name="horizontalSpacer_14">
       <property name="orientation">
@@ -2054,7 +2334,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
       <property name="sizeHint" stdset="0">
        <size>
         <width>852</width>
-        <height>20</height>
+        <height>15</height>
        </size>
       </property>
      </spacer>
@@ -2066,13 +2346,58 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1155</width>
+     <width>1148</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>cbTipo_Nota</tabstop>
+  <tabstop>cbSerie</tabstop>
+  <tabstop>leNumero</tabstop>
+  <tabstop>pbSelec_Nota</tabstop>
+  <tabstop>pbLimpiar</tabstop>
+  <tabstop>leFecha_Emision</tabstop>
+  <tabstop>leEstado_Documento</tabstop>
+  <tabstop>leURL</tabstop>
+  <tabstop>cbMotivo</tabstop>
+  <tabstop>leSerie_Numero</tabstop>
+  <tabstop>pbSelec_Comp</tabstop>
+  <tabstop>leEstado</tabstop>
+  <tabstop>leRazon_Social</tabstop>
+  <tabstop>leDireccion</tabstop>
+  <tabstop>leRUC</tabstop>
+  <tabstop>leInterlocutor</tabstop>
+  <tabstop>leDNI</tabstop>
+  <tabstop>leCorreo</tabstop>
+  <tabstop>tbwCotizacion_Cliente</tabstop>
+  <tabstop>cbTipo_Operacion</tabstop>
+  <tabstop>leForma_Pago</tabstop>
+  <tabstop>pbVerCuotas</tabstop>
+  <tabstop>leMoneda</tabstop>
+  <tabstop>leTipo_Cambio</tabstop>
+  <tabstop>leSub_Total</tabstop>
+  <tabstop>leSub_Total_Soles</tabstop>
+  <tabstop>leDescuento_Item</tabstop>
+  <tabstop>leDescuento_Item_Soles</tabstop>
+  <tabstop>leDescuento_Global</tabstop>
+  <tabstop>leDescuento_Global_Soles</tabstop>
+  <tabstop>leTotal_SinIGV</tabstop>
+  <tabstop>leTotal_SinIGV_Soles</tabstop>
+  <tabstop>leIGV</tabstop>
+  <tabstop>leIGV_Soles</tabstop>
+  <tabstop>leTotal</tabstop>
+  <tabstop>leTotal_Soles</tabstop>
+  <tabstop>pbGrabar</tabstop>
+  <tabstop>pbEnviar_SUNAT</tabstop>
+  <tabstop>pbAbrirPDF</tabstop>
+  <tabstop>pbAnular_Factura</tabstop>
+  <tabstop>pbConsulta_Anulacion</tabstop>
+  <tabstop>pbImprimir</tabstop>
+  <tabstop>pbSalir</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

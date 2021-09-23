@@ -14,7 +14,7 @@ from tkinter import filedialog
 
 TipNota={'3':'NOTA DE CRÉDITO','4':'NOTA DE DÉBITO'}
 TipComprobante={'1':'FACTURA','2':'BOLETA'}
-TipSerie={'FACTURA':'FFF1','BOLETA':'BBB1'}
+TipSerie={'FACTURA':['F001','0001'],'BOLETA':['B001','0001']}
 EstadoFactura={'1':'ANULADO','2':'CANCELADO','3':'PENDIENTE','4':'VENCIDO'}
 EstadoCot={'1':'Proceso sin Referencia','2':'Requiere Aprobación Crédito','3':'Crédito Aprobado o Rechazado sin Referencia','4':'Crédito Aprobado o Rechazado con Referencia','5':'Proceso con Referencia','6':'Pedido Comercial','9':'Anulado'}
 sqlForma_Pago="SELECT Descrip_Pago,Forma_Pago FROM `TAB_SOC_024: Forma de pago`"
@@ -23,8 +23,6 @@ sqlMoneda="SELECT Descrip_moneda,Cod_moneda FROM TAB_SOC_008_Monedas"
 
 sqlMarca="SELECT Descrip_Marca,Cod_Marca  FROM TAB_MAT_010_Marca_de_Producto"
 sqlMatSunat="SELECT Descrip_SUNAT,Cod_Sunat FROM TAB_SOC_026_Tabla_productos_SUNAT"
-sqlMat="SELECT Descrip_Mat,Cod_Mat FROM TAB_MAT_001_Catalogo_Materiales"
-
 
 class IngresarMotivo(QDialog):
     def __init__(self, titulo, label, limite):
@@ -57,7 +55,12 @@ class SeleccionarNota(QDialog):
 
         cargarIcono(self, 'erp')
 
-        sqlNota="SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura FROM TAB_VENTA_009_Cabecera_Facturacion a LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' GROUP BY c.Nro_Facturacion"%(Cod_Soc,Año,Tiponota,Serienota)
+        sqlNota='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
+        FROM TAB_VENTA_009_Cabecera_Facturacion a
+        LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
+        LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
+        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'
+        GROUP BY c.Nro_Facturacion'''%(Cod_Soc,Año,Tiponota,Serienota)
         Nota=consultarSql(sqlNota)
 
         self.twNotas.clear()
@@ -92,7 +95,12 @@ class SeleccionarFacturacion(QDialog):
 
         cargarIcono(self, 'erp')
 
-        sqlFac="SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura FROM TAB_VENTA_009_Cabecera_Facturacion a LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' GROUP BY c.Nro_Facturacion"%(Cod_Soc,Año,TipoComprobante,SerieComp)
+        sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
+        FROM TAB_VENTA_009_Cabecera_Facturacion a
+        LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
+        LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
+        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'
+        GROUP BY c.Nro_Facturacion'''%(Cod_Soc,Año,TipoComprobante,SerieComp)
         Fac=consultarSql(sqlFac)
 
         self.twFacturacion.clear()
@@ -117,21 +125,72 @@ class SeleccionarFacturacion(QDialog):
         Nro_Facturacion=item.text(1)
         self.close()
 
+class VerCuotas(QDialog):
+    def __init__(self,Cod_Cliente,Nro_Cotización):
+        QDialog.__init__(self)
+        uic.loadUi("ERP_Consulta_Cuotas.ui",self)
+
+        self.pbSalir.clicked.connect(self.Salir)
+
+        cargarIcono(self, 'erp')
+        cargarIcono(self.pbGrabar, 'grabar')
+        cargarIcono(self.pbModificar, 'modificar')
+        cargarIcono(self.pbSalir, 'salir')
+
+        sqlCuotas='''SELECT Nro_correlativo,Monto_Deposito,Fecha_Limite_Deposito
+        FROM TAB_VENTA_005_Cabecera_Operaciones_Bancarias_Por_Cotizacion
+        WHERE Cod_Soc='%s' AND Año_Cot_Client='%s' AND Cod_Cliente='%s' AND  Nro_Cot_Client='%s'
+        ORDER BY Nro_correlativo ASC''' %(Cod_Soc,Año,Cod_Cliente,Nro_Cotización)
+        informacion=consultarSql(sqlCuotas)
+
+        self.tbwCuotas.clearContents()
+        rows=self.tbwCuotas.rowCount()
+        for r in range(rows):
+            self.tbwCuotas.removeRow(0)
+        if informacion!=[]:
+            flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            row=0
+            for fila in informacion:
+                fila[1]=formatearDecimal(fila[1],'2')
+                fila[2]=formatearFecha(fila[2])
+                col=0
+                for i in fila:
+                    item=QTableWidgetItem(i)
+                    item.setFlags(flags)
+                    item.setTextAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+                    if self.tbwCuotas.rowCount()<=row:
+                        self.tbwCuotas.insertRow(self.tbwCuotas.rowCount())
+                    self.tbwCuotas.setItem(row, col, item)
+                    col += 1
+                row+=1
+
+    def Salir(self):
+        self.close()
+
 class ERP_Facturacion_Notas(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         uic.loadUi("ERP_Facturacion_Notas.ui",self)
 
         global Cod_Soc,Nom_Soc,Cod_Usuario
-        global Año,dicCliente,dicFormaPago,dicMoneda,dicFormaPago,dicMarca,dicMat,dicMatSUNAT
+        global Año,dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT
 
         Cod_Soc='1000'
         Nom_Soc='MULTICABLE PERU S.A.C.'
         Cod_Usuario='2021100004'
 
         self.cbTipo_Nota.activated.connect(self.cargarSerie)
+
         self.pbSelec_Nota.clicked.connect(self.SeleccionarNota)
         self.pbSelec_Comp.clicked.connect(self.SeleccionarFacturacion)
+
+        self.pbLimpiar.clicked.connect(self.Limpiar)
+
+        self.leDescuento_Global.textChanged.connect(self.numeroDescuentoGlobal)
+        self.leDescuento_Global.editingFinished.connect(self.descuentoGlobal)
+
+        self.pbVerCuotas.clicked.connect(self.VerCuotas)
+
         self.pbGrabar.clicked.connect(self.Grabar)
         self.pbEnviar_SUNAT.clicked.connect(self.botonEnviarSunat)
         self.pbAbrirPDF.clicked.connect(self.botonAbrirPdf)
@@ -142,7 +201,7 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     # def datosGenerales(self, codSoc, empresa, usuario):
     #     global Cod_Soc, Nom_Soc, Cod_Usuario
-    #     global Año,dicCliente,dicFormaPago,dicMoneda,dicFormaPago,dicMarca,dicMat,dicMatSUNAT
+    #     global Año,dicCliente,dicMoneda,dicFormaPago,dicMarca,dicMat,dicMatSUNAT
     #     Cod_Soc = codSoc
     #     Nom_Soc = empresa
     #     Cod_Usuario = usuario
@@ -151,19 +210,22 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.tipoCambio()
         self.botones()
         self.cargarDiccionarios()
+        self.bloquearDatos()
 
         cargarLogo(self.lbLogo_Mp,'multiplay')
         cargarLogo(self.lbLogo_Soc, Cod_Soc)
         cargarIcono(self, 'erp')
-        cargarIcono(self.pbSalir, 'salir')
+        cargarIcono(self.pbVerCuotas, 'consultar')
         cargarIcono(self.pbGrabar, 'grabar')
         cargarIcono(self.pbAbrirPDF, 'pdf')
         cargarIcono(self.pbSelec_Nota, 'buscar')
         cargarIcono(self.pbSelec_Comp,'buscar')
+        cargarIcono(self.pbLimpiar,'nuevo')
         cargarIcono(self.pbEnviar_SUNAT, 'envio')
         cargarIcono(self.pbAnular_Factura,'darbaja')
         cargarIcono(self.pbImprimir, 'imprimir')
         cargarIcono(self.pbConsulta_Anulacion,'buscar')
+        cargarIcono(self.pbSalir, 'salir')
 
         now = datetime.datetime.now()
         Año=str(now.year)
@@ -171,35 +233,28 @@ class ERP_Facturacion_Notas(QMainWindow):
         Cliente=consultarSql(sqlCliente)
         dicCliente={}
         for dato in Cliente:
-            dicCliente[dato[1]]=dato[0]
+            dicCliente[dato[0]]=dato[1]
 
         Moneda=consultarSql(sqlMoneda)
         dicMoneda={}
         for dato in Moneda:
-            dicMoneda[dato[1]]=dato[0]
-
-        FormaPago=consultarSql(sqlForma_Pago)
-        dicFormaPago={}
-        for dato in FormaPago:
-            dicFormaPago[dato[1]]=dato[0]
-
-        insertarDatos(self.cbForma_Pago,FormaPago)
-        self.cbForma_Pago.setCurrentIndex(-1)
+            dicMoneda[dato[0]]=dato[1]
 
         Marca=consultarSql(sqlMarca)
         dicMarca={}
         for dato in Marca:
-            dicMarca[dato[1]]=dato[0]
+            dicMarca[dato[0]]=dato[1]
 
+        sqlMat="SELECT Descrip_Mat,Cod_Mat FROM TAB_MAT_001_Catalogo_Materiales WHERE Cod_Soc='%s';"%(Cod_Soc)
         Material=consultarSql(sqlMat)
         dicMat={}
         for dato in Material:
-            dicMat[dato[1]]=dato[0]
+            dicMat[dato[0]]=dato[1]
 
         MaterialSUNAT=consultarSql(sqlMatSunat)
         dicMatSUNAT={}
         for dato in MaterialSUNAT:
-            dicMatSUNAT[dato[1]]=dato[0]
+            dicMatSUNAT[dato[0]]=dato[1]
 
     def botones(self):
         self.pbGrabar.setEnabled(False)
@@ -207,7 +262,7 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.pbAbrirPDF.setEnabled(False)
         self.pbAnular_Factura.setEnabled(False)
         self.pbConsulta_Anulacion.setEnabled(False)
-        # self.pbImprimir.setEnabled(False)
+        self.pbImprimir.setEnabled(False)
 
     def cargarDiccionarios(self):
         global dict_descripBreve
@@ -224,28 +279,35 @@ class ERP_Facturacion_Notas(QMainWindow):
             self.cbTipo_Nota.setCurrentIndex(-1)
 
     def tipoCambio(self):
-        fecha_hora = (str(date.today()) +" "+"00:00:00")
-        sqlTipoCambio="SELECT Tipo_Cambio FROM `TAB_SOC_007_Monedas Tipo de cambio` WHERE Cod_moneda = '%s' AND Fecha_Moneda>='%s' AND Mon_Cambio = '%s'"%(1,fecha_hora,2)
+        Fecha=datetime.datetime.now().strftime("%Y-%m-%d")
+        sqlTipoCambio="SELECT Tipo_Cambio FROM `TAB_SOC_007_Monedas Tipo de cambio` WHERE Cod_moneda = '%s' AND Fecha_Reg = '%s' AND Mon_Cambio = '%s' ORDER BY Fecha_Reg DESC, Hora_Reg DESC"%(1,Fecha,2)
         lista = convlist(sqlTipoCambio)
-        if len(lista)!=0:
+        if lista!=[]:
             self.leTipo_Cambio.setText(lista[0])
             self.leTipo_Cambio.setReadOnly(True)
         else:
-            reply=mensajeDialogo('pregunta','Información',"No hay un tipo de cambio registrado para la fecha actual.\n¿Desea continuar con la cotización?")
-            if reply=='Yes':
+            # reply=mensajeDialogo('pregunta','Información',"No hay un tipo de cambio registrado para la fecha actual.\n¿Desea continuar con la cotización?")
+            # if reply=='Yes':
                 #Retirar, estas lineas de abajo son provicionales!
-                sqlProvicional="SELECT Tipo_Cambio FROM `TAB_SOC_007_Monedas Tipo de cambio` WHERE Cod_moneda = '%s' AND Fecha_Reg<DATE(NOW()) AND Mon_Cambio = '%s' ORDER BY Fecha_Reg DESC"%(1,2)
-                TipCamPro = convlist(sqlProvicional)
-                self.leTipo_Cambio.setText(TipCamPro[0])
-                self.leTipo_Cambio.setReadOnly(True)
+            sqlProvicional="SELECT Tipo_Cambio FROM `TAB_SOC_007_Monedas Tipo de cambio` WHERE Cod_moneda = '%s' AND Fecha_Reg<'%s' AND Mon_Cambio = '%s' ORDER BY Fecha_Reg DESC, Hora_Reg DESC"%(1,Fecha,2)
+            TipCamPro = convlist(sqlProvicional)
+            self.leTipo_Cambio.setText(TipCamPro[0])
+            self.leTipo_Cambio.setReadOnly(True)
 
     def cargarSerie(self):
         self.cbSerie.clear()
         self.cbMotivo.clear()
         tipo_nota=self.cbTipo_Nota.currentText()
-        for k,v in TipSerie.items():
-            self.cbSerie.addItem(v)
+        listSeries=[]
+        for datos in TipSerie.values():
+            for i in datos:
+                if i not in listSeries:
+                    listSeries.append(i)
+        listSeries.sort(reverse=True)
+        for i in listSeries:
+            self.cbSerie.addItem(i)
             self.cbSerie.setCurrentIndex(-1)
+
         if tipo_nota=="NOTA DE CRÉDITO":
             for k,v in dict_tipo_de_nota_de_credito.items():
                 self.cbMotivo.addItem(k)
@@ -256,6 +318,158 @@ class ERP_Facturacion_Notas(QMainWindow):
                 self.cbMotivo.addItem(k)
                 self.cbMotivo.setCurrentIndex(-1)
 
+
+    def numeroDescuentoGlobal(self):
+        validarNumero(self.leDescuento_Global)
+
+    def descuentoGlobal(self):
+        self.leDescuento_Global.setText(formatearDecimal(self.leDescuento_Global.text(),'2'))
+        self.cargarMontos()
+
+    def cargarMontos(self):
+        try:
+            list_cantidad = []
+            list_precio_sinIGV  = []
+            list_descuento_sinIGV= []
+
+            for i in range(self.tbwCotizacion_Cliente.rowCount()):
+                try:
+                    list_cantidad.append(self.tbwCotizacion_Cliente.item(i,5).text())
+                except:
+                    list_cantidad.append("")
+                try:
+                    list_precio_sinIGV.append(self.tbwCotizacion_Cliente.item(i,6).text())
+                except:
+                    list_precio_sinIGV.append("")
+                try:
+                    desc=self.tbwCotizacion_Cliente.item(i,8).text()
+                    d = desc.replace(",","")
+                    list_descuento_sinIGV.append(float(d))
+                except:
+                    list_descuento_sinIGV.append("")
+
+            list_cantxprecio = []
+            for i in range(len(list_cantidad)):
+                c = list_cantidad[i].replace(",","")
+                p = list_precio_sinIGV[i].replace(",","")
+                cant_x_precio= float(c) * float(p)
+                list_cantxprecio.append(cant_x_precio)
+                i += 1
+
+            TipoCambio=self.leTipo_Cambio.text()
+            Subtotal=sum(list_cantxprecio)
+            DescuentoItem=sum(list_descuento_sinIGV)
+            DescuentoGlobal=self.leDescuento_Global.text()
+            if len(DescuentoGlobal)==0:
+                DescuentoGlobal="0.00"
+                self.leDescuento_Global_Soles.clear()
+            else:
+                DescuentoGlobal=DescuentoGlobal.replace(",","")
+                self.leDescuento_Global_Soles.setText(formatearDecimal(str(float(DescuentoGlobal)*float(TipoCambio)),'2'))
+            DescuentoTotal=DescuentoItem+float(DescuentoGlobal)
+            TotalsinIGV=Subtotal-DescuentoTotal
+            IGV=0.18*TotalsinIGV
+            Total=TotalsinIGV+IGV
+
+            self.leSub_Total.setText(formatearDecimal(str(Subtotal),'2'))
+            self.leDescuento_Item.setText(formatearDecimal(str(DescuentoItem),'2'))
+            self.leTotal_SinIGV.setText(formatearDecimal(str(TotalsinIGV),'2'))
+            self.leIGV.setText(formatearDecimal(str(IGV),'2'))
+            self.leTotal.setText(formatearDecimal(str(Total),'2'))
+
+            self.leSub_Total_Soles.setText(formatearDecimal(str(Subtotal*float(TipoCambio)),'2'))
+            self.leDescuento_Item_Soles.setText(formatearDecimal(str(DescuentoItem*float(TipoCambio)),'2'))
+            self.leTotal_SinIGV_Soles.setText(formatearDecimal(str(TotalsinIGV*float(TipoCambio)),'2'))
+            self.leIGV_Soles.setText(formatearDecimal(str(IGV*float(TipoCambio)),'2'))
+            self.leTotal_Soles.setText(formatearDecimal(str(Total*float(TipoCambio)),'2'))
+
+        except Exception as e:
+            print(e)
+
+    def bloquearDatos(self):
+
+        self.leNumero.setReadOnly(True)
+        self.leFecha_Emision.setReadOnly(True)
+        self.leEstado_Documento.setReadOnly(True)
+        self.leURL.setReadOnly(True)
+        self.leFecha_Vencimiento.setReadOnly(True)
+
+        self.leNro_Cot.setReadOnly(True)
+        self.leRazon_Social.setReadOnly(True)
+        self.leDireccion.setReadOnly(True)
+        self.leRUC.setReadOnly(True)
+        self.leInterlocutor.setReadOnly(True)
+        self.leDNI.setReadOnly(True)
+        self.leCorreo.setReadOnly(False)
+
+        self.cbTipo_Operacion.setEnabled(True)
+        self.leForma_Pago.setReadOnly(True)
+        self.leMoneda.setReadOnly(True)
+
+        self.leSub_Total.setReadOnly(True)
+        self.leDescuento_Item.setReadOnly(True)
+        self.leTotal_SinIGV.setReadOnly(True)
+        self.leIGV.setReadOnly(True)
+        self.leTotal.setReadOnly(True)
+
+        self.leSub_Total_Soles.setReadOnly(True)
+        self.leDescuento_Item_Soles.setReadOnly(True)
+        self.leDescuento_Global_Soles.setReadOnly(True)
+        self.leTotal_SinIGV_Soles.setReadOnly(True)
+        self.leIGV_Soles.setReadOnly(True)
+        self.leTotal_Soles.setReadOnly(True)
+        self.pbVerCuotas.setEnabled(False)
+
+    def Limpiar(self):
+
+        self.botones()
+        #Limpieza de datos.....
+        self.cbTipo_Comprobante.setCurrentIndex(-1)
+        self.cbTipo_Comprobante.setEnabled(True)
+        self.cbSerie.setCurrentIndex(-1)
+        self.cbSerie.setEnabled(True)
+        self.leNumero.clear()
+        self.leFecha_Emision.clear()
+        self.leEstado_Documento.clear()
+        self.leURL.clear()
+
+        self.leNro_Cot.clear()
+        self.leRazon_Social.clear()
+        self.leDireccion.clear()
+        self.leRUC.clear()
+        self.leInterlocutor.clear()
+        self.leDNI.clear()
+        self.leCorreo.clear()
+
+        self.leForma_Pago.clear()
+        self.leMoneda.clear()
+
+        self.leSub_Total.clear()
+        self.leDescuento_Item.clear()
+        self.leDescuento_Global.clear()
+        self.leDescuento_Global.setEnabled(True)
+        self.leTotal_SinIGV.clear()
+        self.leIGV.clear()
+        self.leTotal.clear()
+
+        self.leSub_Total_Soles.clear()
+        self.leDescuento_Item_Soles.clear()
+        self.leDescuento_Global_Soles.clear()
+        self.leTotal_SinIGV_Soles.clear()
+        self.leIGV_Soles.clear()
+        self.leTotal_Soles.clear()
+
+        self.tbwCotizacion_Cliente.clearContents()
+        rows=self.tbwCotizacion_Cliente.rowCount()
+        for r in range(rows):
+            self.tbwCotizacion_Cliente.removeRow(0)
+
+    def VerCuotas(self):
+
+        Nro_Cotización=self.leNro_Cot.text()
+        Cod_Cliente=dicCliente[self.leRazon_Social.text()]
+
+        VerCuotas(Cod_Cliente,Nro_Cotización).exec_()
 
     def SeleccionarFacturacion(self):
         global Serie,Nro_Facturacion
@@ -360,7 +574,8 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s' GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,Serie,Nro_Facturacion)
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,Serie,Nro_Facturacion)
 
             for i in range(len(lista)):
                 if lista[i]=='0':
@@ -686,7 +901,8 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s' GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoNota,SerieNota,NroNota)
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoNota,SerieNota,NroNota)
 
             for i in range(len(lista)):
                 if lista[i]=='0':

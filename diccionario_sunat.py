@@ -69,6 +69,7 @@ dict_tipo_de_nota_de_credito["DISMINUCIÓN EN EL VALOR"] = 9
 dict_tipo_de_nota_de_credito["OTROS CONCEPTOS"] = 10
 dict_tipo_de_nota_de_credito["AJUSTES AFECTOS AL IVAP"] = 11
 dict_tipo_de_nota_de_credito["AJUSTES DE OPERACIONES DE EXPORTACIÓN"] = 12
+dict_tipo_de_nota_de_credito["AJUSTES - MONTOS Y/O FECHAS DE PAGO"] = 13
 
 nota_credito_ingreso_cuentas=[1,2,4,5,6,7,8,9,10,11,12]
 nota_credito_ingreso_producto=[1,2,6,7]
