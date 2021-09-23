@@ -85,7 +85,8 @@ class SeleccionarNota(QDialog):
         self.close()
 
 class SeleccionarFacturacion(QDialog):
-    def __init__(self,TipoComprobante,SerieComp):
+    def __init__(self,SerieComp):
+    # def __init__(self,TipoComprobante,SerieComp):
         QDialog.__init__(self)
         uic.loadUi("ERP_Consulta_Facturacion.ui",self)
 
@@ -93,6 +94,10 @@ class SeleccionarFacturacion(QDialog):
         self.lePalabra.textChanged.connect(self.buscar)
 
         cargarIcono(self, 'erp')
+
+        if SerieComp[0]=='F':
+            TipoComprobante='1'
+
 
         sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
         FROM TAB_VENTA_009_Cabecera_Facturacion a
@@ -490,13 +495,14 @@ class ERP_Facturacion_Notas(QMainWindow):
         TipNota=self.cbTipo_Nota.currentText()
         Serienota=self.cbSerie.currentText()
         if len(TipNota)!=0 and len(Serienota)!=0:
-            for k,v in TipSerie.items():
-                if Serienota in v:
-                    TipoComp=k
-            for k,v in TipComprobante.items():
-                if TipoComp==k:
-                    TipoComprobante=v
-            SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
+            # for k,v in TipSerie.items():
+            #     if Serienota in v:
+            #         TipoComp=k
+            # for k,v in TipComprobante.items():
+            #     if TipoComp==k:
+            #         TipoComprobante=v
+            SeleccionarFacturacion(Serienota).exec_()
+            # SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
             self.CargarFacturacion()
         elif len(TipNota)!=0 and len(Serienota)==0:
             mensajeDialogo('informacion','Información','Seleccione Serie')
