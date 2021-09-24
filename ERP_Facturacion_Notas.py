@@ -222,7 +222,7 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def datosGenerales(self, codSoc, empresa, usuario):
         global Cod_Soc, Nom_Soc, Cod_Usuario
-        global Año,dicCliente,dicMoneda,dicFormaPago,dicMarca,dicMat,dicMatSUNAT
+        global Año,dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT
         Cod_Soc = codSoc
         Nom_Soc = empresa
         Cod_Usuario = usuario
