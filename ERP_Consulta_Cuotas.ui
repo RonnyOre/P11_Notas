@@ -116,7 +116,7 @@
       <widget class="QTableWidget" name="tbwCuotas">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -143,7 +143,7 @@ background-color: rgb(255, 213, 79);
         </property>
         <property name="font">
          <font>
-          <pointsize>12</pointsize>
+          <pointsize>11</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -158,7 +158,7 @@ background-color: rgb(255, 213, 79);
         </property>
         <property name="font">
          <font>
-          <pointsize>12</pointsize>
+          <pointsize>11</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>
@@ -173,7 +173,7 @@ background-color: rgb(255, 213, 79);
         </property>
         <property name="font">
          <font>
-          <pointsize>12</pointsize>
+          <pointsize>11</pointsize>
           <weight>75</weight>
           <bold>true</bold>
          </font>

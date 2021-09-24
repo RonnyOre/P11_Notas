@@ -97,14 +97,30 @@ class SeleccionarFacturacion(QDialog):
 
         if SerieComp[0]=='F':
             TipoComprobante='1'
+            sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura,a.Tipo_Comprobante
+            FROM TAB_VENTA_009_Cabecera_Facturacion a
+            LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
+            LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
+            GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion, c.Serie'''%(Cod_Soc,Año,TipoComprobante)
 
+        elif SerieComp[0]=='B':
+            TipoComprobante='2'
+            sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura,a.Tipo_Comprobante
+            FROM TAB_VENTA_009_Cabecera_Facturacion a
+            LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
+            LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
+            GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion, c.Serie'''%(Cod_Soc,Año,TipoComprobante)
 
-        sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
-        FROM TAB_VENTA_009_Cabecera_Facturacion a
-        LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
-        LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'
-        GROUP BY c.Nro_Facturacion'''%(Cod_Soc,Año,TipoComprobante,SerieComp)
+        elif SerieComp[0]=='0':
+            sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura,a.Tipo_Comprobante
+            FROM TAB_VENTA_009_Cabecera_Facturacion a
+            LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
+            LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND (a.Tipo_Comprobante='1' OR a.Tipo_Comprobante='2')
+            GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion, c.Serie'''%(Cod_Soc,Año)
+
         Fac=consultarSql(sqlFac)
 
         self.twFacturacion.clear()
@@ -124,9 +140,10 @@ class SeleccionarFacturacion(QDialog):
         buscarTabla(self.twFacturacion, self.lePalabra.text(), [1,2,3,4])
 
     def Facturacion(self,item):
-        global Serie,Nro_Facturacion
+        global Serie,Nro_Facturacion,Tipo_Comprobante
         Serie=item.text(0)
         Nro_Facturacion=item.text(1)
+        Tipo_Comprobante=item.text(7)
         self.close()
 
 class VerCuotas(QDialog):
@@ -488,9 +505,10 @@ class ERP_Facturacion_Notas(QMainWindow):
     #     VerCuotas(Cod_Cliente,Nro_Cotización).exec_()
 
     def SeleccionarFacturacion(self):
-        global Serie,Nro_Facturacion
+        global Serie,Nro_Facturacion,Tipo_Comprobante
         Serie=None
         Nro_Facturacion=None
+        Tipo_Comprobante=None
 
         TipNota=self.cbTipo_Nota.currentText()
         Serienota=self.cbSerie.currentText()
@@ -511,11 +529,12 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def CargarFacturacion(self):
         try:
+
             sqlCabFact='''SELECT b.Razon_social,b.Direcc_cliente,b.RUC,b.Representante_Cliente,b.DNI,b.Correo_Representante,a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global
             FROM TAB_VENTA_009_Cabecera_Facturacion a
             LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
             LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,Serie,Nro_Facturacion)
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,Tipo_Comprobante,Serie,Nro_Facturacion)
             lista=convlist(sqlCabFact)
 
             sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_sin_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
@@ -524,8 +543,8 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
-            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,Serie,Nro_Facturacion)
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,Tipo_Comprobante,Serie,Nro_Facturacion)
 
             for i in range(len(lista)):
                 if lista[i]=='0':
