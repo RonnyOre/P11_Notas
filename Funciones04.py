@@ -2934,3 +2934,53 @@ def anularDocumentoSQL(Cod_Soc, Año, tabla, tipo_de_comprobante, ruta, serie, n
 
     except Exception as e:
         mensajeDialogo("error", "anularDocumentoSQL", e)
+
+#--------------------------------Programa N° 11 - ERP_NOTAS----------------------------------
+
+def CargarFactNota(sql,tw,self):
+    tw.clearContents()
+    informacion=consultarSql(sql)
+    if informacion!=[]:
+        rows=tw.rowCount()
+        for r in range(rows):
+            tw.removeRow(0)
+        flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+        row=0
+        for fila in informacion:
+            fila[7]='0.00'
+            PrecioconIGV=float(fila[6])*(1+(porcentaje_de_igv/100))
+            DescuentoconIGV=float(fila[7])*(1+(porcentaje_de_igv/100))
+            PreciofinalconIGV=PrecioconIGV-(DescuentoconIGV/float(fila[5]))
+            Subtotal=float(fila[5])*PreciofinalconIGV
+            fila.insert(7,str(PrecioconIGV))
+            fila.insert(9,str(DescuentoconIGV))
+            fila.insert(10,str(PreciofinalconIGV))
+            fila.insert(11,str(Subtotal))
+            fila[5]=formatearDecimal(fila[5],'3')
+            fila[6]=formatearDecimal(fila[6],'2')
+            fila[7]=formatearDecimal(fila[7],'2')
+            fila[8]=formatearDecimal(fila[8],'2')
+            fila[9]=formatearDecimal(fila[9],'2')
+            fila[10]=formatearDecimal(fila[10],'2')
+            fila[11]=formatearDecimal(fila[11],'2')
+            if fila[12]==None:
+                fila[12]='0.000'
+            else:
+                fila[12]=formatearDecimal(fila[12],'3')
+            if fila[13]==None:
+                fila[13]='0.000'
+            else:
+                fila[13]=formatearDecimal(fila[13],'3')
+            col=0
+            for i in fila:
+                item=QTableWidgetItem(i)
+                item.setFlags(flags)
+                if tw.rowCount()<=row:
+                    tw.insertRow(tw.rowCount())
+                tw.setItem(row,col, item)
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                tw.resizeColumnToContents(col)
+                col += 1
+            row+=1
+    else:
+        mensajeDialogo("informacion", "Información","No se encontraron registros")

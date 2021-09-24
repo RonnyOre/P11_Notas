@@ -537,7 +537,7 @@ class ERP_Facturacion_Notas(QMainWindow):
             WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,Tipo_Comprobante,Serie,Nro_Facturacion)
             lista=convlist(sqlCabFact)
 
-            sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_sin_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
+            sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_sin_IGV, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
             FROM TAB_VENTA_010_Detalle_Facturacion a
             LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Soc=a.Cod_Soc AND b.Cod_Mat=a.Cod_Material
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
@@ -598,7 +598,7 @@ class ERP_Facturacion_Notas(QMainWindow):
                 lista[9]=""
             self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
 
-            CargarFact(sqlDetFact,self.tbwCotizacion_Cliente,self)
+            CargarFactNota(sqlDetFact,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()
 
             sqlVerificar="SELECT Nro_Cotización FROM TAB_VENTA_009_Cabecera_Facturacion WHERE Serie='%s';"%(self.cbSerie.currentText())
@@ -895,13 +895,13 @@ class ERP_Facturacion_Notas(QMainWindow):
         if tipo_de_comprobante=='NOTA DE CRÉDITO':
             tipo_de_nota_de_credito.append(dict_tipo_de_comprobante[TipoComp]) # documento_que_se_modifica_tipo
             tipo_de_nota_de_credito.append(self.leSerie_Numero.text().split("-")[0]) # documento_que_se_modifica_serie
-            tipo_de_nota_de_credito.append(self.leSerie_Numero.text().split("-")[1]) # documento_que_se_modifica_numero
+            tipo_de_nota_de_credito.append(int(self.leSerie_Numero.text().split("-")[1])) # documento_que_se_modifica_numero
             tipo_de_nota_de_credito.append(dict_tipo_de_nota_de_credito[self.cbMotivo.itemText(self.cbMotivo.currentIndex())]) # tipo_de_nota_de_credito
 
         elif tipo_de_comprobante=='NOTA DE DÉBITO':
             tipo_de_nota_de_debito.append(dict_tipo_de_comprobante[TipoComp]) # documento_que_se_modifica_tipo
             tipo_de_nota_de_debito.append(self.leSerie_Numero.text().split("-")[0]) # documento_que_se_modifica_serie
-            tipo_de_nota_de_debito.append(self.leSerie_Numero.text().split("-")[1]) # documento_que_se_modifica_numero
+            tipo_de_nota_de_debito.append(int(self.leSerie_Numero.text().split("-")[1])) # documento_que_se_modifica_numero
             tipo_de_nota_de_debito.append(dict_tipo_de_nota_de_debito[self.cbMotivo.itemText(self.cbMotivo.currentIndex())]) # tipo_de_nota_de_debito
         #############################################################
         Doc=tipo_de_comprobante.lower()
