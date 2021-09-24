@@ -88,7 +88,7 @@ class SeleccionarFacturacion(QDialog):
     def __init__(self,SerieComp):
     # def __init__(self,TipoComprobante,SerieComp):
         QDialog.__init__(self)
-        uic.loadUi("ERP_Consulta_Facturacion.ui",self)
+        uic.loadUi("ERP_Consulta_Facturas.ui",self)
 
         self.twFacturacion.itemDoubleClicked.connect(self.Facturacion)
         self.lePalabra.textChanged.connect(self.buscar)
