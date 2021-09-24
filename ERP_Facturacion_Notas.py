@@ -543,7 +543,7 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
             GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,Tipo_Comprobante,Serie,Nro_Facturacion)
 
             for i in range(len(lista)):
@@ -569,6 +569,9 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             self.leRazon_Social.setText(lista[0])
             self.leDireccion.setText(lista[1])
+            if Tipo_Comprobante=='2':
+                if len(lista[2])==11:
+                    lista[2]=lista[2][2:10]
             self.leRUC.setText(lista[2])
             self.leInterlocutor.setText(lista[3])
             self.leDNI.setText(lista[4])
@@ -598,9 +601,10 @@ class ERP_Facturacion_Notas(QMainWindow):
             CargarFact(sqlDetFact,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()
 
-            sqlVerificar="SELECT Nro_Cotización FROM TAB_VENTA_009_Cabecera_Facturacion"
+            sqlVerificar="SELECT Nro_Cotización FROM TAB_VENTA_009_Cabecera_Facturacion WHERE Serie='%s';"%(self.cbSerie.currentText())
             guardadas=convlist(sqlVerificar)
-            if Nro_Facturacion in guardadas:
+            print(guardadas)
+            if Serie+'-'+Nro_Facturacion in guardadas:
                 self.pbGrabar.setEnabled(False)
                 mensajeDialogo('informacion','Información','Esta Facturación ya fue Grabada')
             else:
@@ -621,8 +625,7 @@ class ERP_Facturacion_Notas(QMainWindow):
             if len(tipo_nota)!=0 and len(Serie)!=0:
                 Tipo_Comprobante=TipNota[tipo_nota]
 
-                Num=self.leSerie_Numero.text()
-                Nro_Cotización=Num[Num.find("-")+1:]
+                Nro_Cotización=self.leSerie_Numero.text()
 
                 Cod_Cliente=dicCliente[self.leRazon_Social.text()]
 
@@ -713,6 +716,7 @@ class ERP_Facturacion_Notas(QMainWindow):
                 mensajeDialogo('informacion','Información','Seleccione Tipo de Comprobante y la Serie')
 
         except Exception as e:
+            mensajeDialogo('error','Error','No se pudo Grabar, verifique los datos y vuelva a intentarlo')
             print(e)
 
     def SeleccionarNota(self):
@@ -747,7 +751,7 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
             GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoNota,SerieNota,NroNota)
 
             for i in range(len(lista)):
@@ -761,16 +765,17 @@ class ERP_Facturacion_Notas(QMainWindow):
                 bloquearCb(self.cbTipo_Operacion)
                 bloquearLe(self.leDescuento_Global)
                 self.leDescuento_Global_Soles.clear()
+                self.leNumero.setText(NroNota)
                 self.leEstado_Documento.setStyleSheet("")
                 self.leEstado_Documento.setStyleSheet("background-color: rgb(255,255,255);")
                 self.botones()
 
-            self.leNumero.setText(NroNota)
+
             self.leFecha_Emision.setText(formatearFecha(lista[0]))
             self.leEstado_Documento.setText(EstadoFactura[lista[1]])
             self.leURL.setText(lista[2])
 
-            self.leSerie_Numero.setText(SerieNota+"-"+lista[3])
+            self.leSerie_Numero.setText(lista[3])
             self.cbMotivo.setCurrentIndex(int(lista[4])-1)
 
             self.leRazon_Social.setText(lista[5])
@@ -844,43 +849,44 @@ class ERP_Facturacion_Notas(QMainWindow):
         tipo_de_comprobante=self.cbTipo_Nota.currentText()
         serie=self.cbSerie.currentText()
         numero=self.leNumero.text()
-        sunat_transaction=dict_sunat_transaction["VENTA INTERNA"]
+        sunat_transaction=dict_sunat_transaction[self.cbTipo_Operacion.currentText()]
         cliente_tipo_de_documento=tipoDocumento(self.leRUC.text(), self)
         ruc=self.leRUC.text()
-        sqlDirec="SELECT Direcc_cliente FROM `TAB_COM_001_Maestro Clientes` WHERE RUC='%s'"%(ruc)
-        Direc=convlist(sqlDirec)
         razonSocial=self.leRazon_Social.text()
-        direccion=Direc[0]
+        direccion=self.leDireccion.text()
         correo=self.leCorreo.text()
         fechaEmision=self.leFecha_Emision.text()
-        fechaVencimiento="01-01-2022"
+        fechaVencimiento=self.leFecha_Emision.text()
         moneda=dict_moneda[textoMoneda]
         tipoDeCambio=float(self.leTipo_Cambio.text())
         if textoMoneda=="DOLARES":
-            # descuento_global='0.00'
-            # total_descuento=float(self.leDescuento_Total.text().replace(",",""))
-            descuento_global=''
-            total_descuento=''
+            if len(self.leDescuento_Global.text())!=0:
+                descuento_global=float(self.leDescuento_Global.text().replace(",",""))
+            else:
+                descuento_global=float('0.00')
+            total_descuento=descuento_global+float(self.leDescuento_Item.text().replace(",",""))
             totalGravada=float(self.leTotal_SinIGV.text().replace(",",""))
             totalIgv=float(self.leIGV.text().replace(",",""))
             total=float(self.leTotal.text().replace(",",""))
         else:
-            # descuento_global='0.00'
-            # total_descuento=float(self.leDescuento_Total_Soles.text().replace(",",""))
-            descuento_global=''
-            total_descuento=''
+            if len(self.leDescuento_Global_Soles.text())!=0:
+                descuento_global=float(self.leDescuento_Global_Soles.text().replace(",",""))
+            else:
+                descuento_global=float('0.00')
+            total_descuento=descuento_global+float(self.leDescuento_Item_Soles.text().replace(",",""))
             totalGravada=float(self.leTotal_SinIGV_Soles.text().replace(",",""))
             totalIgv=float(self.leIGV_Soles.text().replace(",",""))
             total=float(self.leTotal_Soles.text().replace(",",""))
 
 
-        condicionesDePago=self.cbForma_Pago.currentText()
+        condicionesDePago="CONTADO"
+        tbwCuotas=[]
         orden_compra_servicio=''
         tipo_de_igv=dict_tipo_de_igv["Gravado - Operación Onerosa"]
         guia_tipo=dict_guia_tipo["GUÍA DE REMISIÓN REMITENTE"]
         ##############################################################
         for k,v in TipSerie.items():
-            if serie==v:
+            if serie in v:
                 TipoComp=k
 
         tipo_de_nota_de_credito=[]
@@ -901,16 +907,13 @@ class ERP_Facturacion_Notas(QMainWindow):
         Doc=tipo_de_comprobante.lower()
         nombreArchivo = Doc.capitalize() + " %s-%s" % (serie, numero)
 
-        generarDocumentoNota(Cod_Soc, tipo_de_comprobante, serie, numero, sunat_transaction, cliente_tipo_de_documento, ruc, razonSocial, direccion, correo, fechaEmision, fechaVencimiento, moneda, tipoDeCambio, descuento_global, total_descuento, totalGravada, totalIgv, total, condicionesDePago, orden_compra_servicio, tipo_de_igv, guia_tipo, nombreArchivo, self.tbwCotizacion_Cliente, tipo_de_nota_de_credito, tipo_de_nota_de_debito, self)
-        self.pbEnviar_SUNAT.setEnabled(False)
-        self.pbAbrirPDF.setEnabled(True)
-        self.pbAnular_Factura.setEnabled(True)
+        generarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, sunat_transaction, cliente_tipo_de_documento, ruc, razonSocial, direccion, correo, fechaEmision, fechaVencimiento, moneda, tipoDeCambio, descuento_global, total_descuento, totalGravada, totalIgv, total, condicionesDePago, tbwCuotas, orden_compra_servicio, tipo_de_igv, guia_tipo, nombreArchivo, self.tbwCotizacion_Cliente, tipo_de_nota_de_credito, tipo_de_nota_de_debito, self)
 
     def botonAbrirPdf(self):
-        tipo_de_comprobante=self.cbTipo_Nota.currentText()
+        tipo_de_comprobante=TipNota[self.cbTipo_Nota.currentText()]
         serie=self.cbSerie.currentText()
         numero=self.leNumero.text()
-        consultarDocumento(Cod_Soc,tipo_de_comprobante, serie, numero, self)
+        consultarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, self)
 
     def botonAnular(self):
         if self.leNumero.text()=="":
@@ -925,7 +928,7 @@ class ERP_Facturacion_Notas(QMainWindow):
                 numero=self.leNumero.text()
                 motivo=Dialogo.texto
                 if motivo!="":
-                    anularDocumento(Cod_Soc,tipo_de_comprobante, serie, numero, motivo, self)
+                    anularDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, self)
                     self.pbAbrirPDF.setEnabled(False)
                     self.pbAnular_Factura.setEnabled(False)
                     self.pbConsulta_Anulacion.setEnabled(True)
@@ -934,10 +937,10 @@ class ERP_Facturacion_Notas(QMainWindow):
         if self.leNumero.text()=="":
             mensajeDialogo("informacion", "Anular", "Seleccionar factura")
         else:
-            tipo_de_comprobante=self.cbTipo_Nota.currentText()
+            tipo_de_comprobante=TipNota[self.cbTipo_Nota.currentText()]
             serie=self.cbSerie.currentText()
             numero=self.leNumero.text()
-            validarAnulacion(Cod_Soc,tipo_de_comprobante, serie, numero, self)
+            validarAnulacion(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self)
 
     def nota_credito_o_debito(self):
         if self.cbTipo_Nota.currentText() == 'NOTA DE CRÉDITO':
