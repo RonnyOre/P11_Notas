@@ -193,12 +193,12 @@ class ERP_Facturacion_Notas(QMainWindow):
         QMainWindow.__init__(self)
         uic.loadUi("ERP_Facturacion_Notas.ui",self)
 
-        # global Cod_Soc,Nom_Soc,Cod_Usuario
-        # global Año,dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT
-        #
-        # Cod_Soc='1000'
-        # Nom_Soc='MULTICABLE PERU S.A.C.'
-        # Cod_Usuario='2021100004'
+        global Cod_Soc,Nom_Soc,Cod_Usuario
+        global Año,dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT
+
+        Cod_Soc='1000'
+        Nom_Soc='MULTICABLE PERU S.A.C.'
+        Cod_Usuario='2021100004'
 
         self.cbTipo_Nota.activated.connect(self.cargarSerie)
 
@@ -220,12 +220,12 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.pbImprimir.clicked.connect(self.nota_credito_o_debito)
         self.pbSalir.clicked.connect(self.Salir)
 
-    def datosGenerales(self, codSoc, empresa, usuario):
-        global Cod_Soc, Nom_Soc, Cod_Usuario
-        global Año,dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT
-        Cod_Soc = codSoc
-        Nom_Soc = empresa
-        Cod_Usuario = usuario
+    # def datosGenerales(self, codSoc, empresa, usuario):
+    #     global Cod_Soc, Nom_Soc, Cod_Usuario
+    #     global Año,dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT
+    #     Cod_Soc = codSoc
+    #     Nom_Soc = empresa
+    #     Cod_Usuario = usuario
 
         self.cargarCombos()
         self.tipoCambio()
@@ -242,7 +242,7 @@ class ERP_Facturacion_Notas(QMainWindow):
         cargarIcono(self.pbSelec_Nota, 'buscar')
         cargarIcono(self.pbSelec_Comp,'buscar')
         cargarIcono(self.pbLimpiar,'nuevo')
-        cargarIcono(self.pbEnviar_SUNAT, 'envio')
+        cargarIcono(self.pbEnviar_SUNAT, 'enviar')
         cargarIcono(self.pbAnular_Factura,'darbaja')
         cargarIcono(self.pbImprimir, 'imprimir')
         cargarIcono(self.pbConsulta_Anulacion,'buscar')

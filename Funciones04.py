@@ -112,7 +112,7 @@ def cargarIcono(obj, tipoIcono):
         'guia':"destino",
         'pdf':"pdf",
         'enviar':"send",
-        'envio':"mail"}
+        'correo':"mail"}
 
         icono = iconos[tipoIcono]
         folderIcono = '''IconosLocales/'''+ icono +'.png'
