@@ -18,6 +18,19 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="1">
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>852</width>
+        <height>15</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item row="1" column="0">
      <spacer name="verticalSpacer">
       <property name="orientation">
@@ -257,7 +270,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
             <bold>true</bold>
            </font>
           </property>
-          <property name="statusTip">
+          <property name="toolTip">
            <string>Buscar Comprobante</string>
           </property>
           <property name="styleSheet">
@@ -579,19 +592,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pbSelec_Comp">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>26</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>33</width>
-            <height>26</height>
-           </size>
-          </property>
+         <widget class="QPushButton" name="pbSelec_Factura">
           <property name="font">
            <font>
             <pointsize>11</pointsize>
@@ -599,14 +600,34 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
             <bold>true</bold>
            </font>
           </property>
-          <property name="statusTip">
-           <string>Buscar Cotización</string>
+          <property name="toolTip">
+           <string>Factura</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
           </property>
           <property name="text">
-           <string/>
+           <string>Factura</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pbSelec_Boleta">
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Factura</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(255, 213, 79);</string>
+          </property>
+          <property name="text">
+           <string>Boleta</string>
           </property>
          </widget>
         </item>
@@ -620,7 +641,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>100</width>
+            <width>40</width>
             <height>20</height>
            </size>
           </property>
@@ -2249,19 +2270,6 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
       </item>
      </layout>
     </item>
-    <item row="0" column="1">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>852</width>
-        <height>15</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
     <item row="1" column="2">
      <spacer name="verticalSpacer_2">
       <property name="orientation">
@@ -2313,7 +2321,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
   <tabstop>leURL</tabstop>
   <tabstop>cbMotivo</tabstop>
   <tabstop>leSerie_Numero</tabstop>
-  <tabstop>pbSelec_Comp</tabstop>
+  <tabstop>pbSelec_Factura</tabstop>
   <tabstop>leRazon_Social</tabstop>
   <tabstop>leDireccion</tabstop>
   <tabstop>leRUC</tabstop>
