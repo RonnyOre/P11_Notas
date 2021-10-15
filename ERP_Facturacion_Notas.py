@@ -14,7 +14,8 @@ from tkinter import filedialog
 
 TipNota={'NOTA DE CRÉDITO':'3','NOTA DE DÉBITO':'4'}
 TipComprobante={'FACTURA':'1','BOLETA':'2'}
-TipSerie={'FACTURA':['F001','0001'],'BOLETA':['B001','0001']}
+# TipSerie={'FACTURA':['F001','0001'],'BOLETA':['B001','0001']}
+TipSerie=['F001','B001','0001']
 EstadoFactura={'1':'ANULADO','2':'CANCELADO','3':'PENDIENTE','4':'VENCIDO'}
 FormaPago={'1':'CONTADO','2':'CRÉDITO'}
 sqlCliente="SELECT Razon_social,Cod_cliente FROM `TAB_COM_001_Maestro Clientes`"
@@ -85,8 +86,8 @@ class SeleccionarNota(QDialog):
         self.close()
 
 class SeleccionarFacturacion(QDialog):
-    def __init__(self,SerieComp):
-    # def __init__(self,TipoComprobante,SerieComp):
+    # def __init__(self,SerieComp):
+    def __init__(self,TipoComprobante,SerieComp):
         QDialog.__init__(self)
         uic.loadUi("ERP_Consulta_Documento.ui",self)
 
@@ -95,40 +96,13 @@ class SeleccionarFacturacion(QDialog):
 
         cargarIcono(self, 'erp')
 
-        # if SerieComp[0]=='F':
-        #     TipoComprobante='1'
-        #     sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura,a.Tipo_Comprobante
-        #     FROM TAB_VENTA_009_Cabecera_Facturacion a
-        #     LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
-        #     LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        #     WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
-        #     GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion, c.Serie'''%(Cod_Soc,Año,TipoComprobante)
-        #
-        # elif SerieComp[0]=='B':
-        #     TipoComprobante='2'
-        #     sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura,a.Tipo_Comprobante
-        #     FROM TAB_VENTA_009_Cabecera_Facturacion a
-        #     LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
-        #     LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        #     WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
-        #     GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion, c.Serie'''%(Cod_Soc,Año,TipoComprobante)
-        #
-        # elif SerieComp[0]=='0':
-        #     sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura,a.Tipo_Comprobante
-        #     FROM TAB_VENTA_009_Cabecera_Facturacion a
-        #     LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
-        #     LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        #     WHERE a.Cod_Soc='%s' AND a.Año='%s' AND (a.Tipo_Comprobante='1' OR a.Tipo_Comprobante='2')
-        #     GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion, c.Serie'''%(Cod_Soc,Año)
-        #
-        # Fac=consultarSql(sqlFac)
-
         sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
         FROM TAB_VENTA_009_Cabecera_Facturacion a
         LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
         LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'
-        GROUP BY c.Tipo_Comprobante,c.Nro_Facturacion;'''%(Cod_Soc,Año,TipoComprobante,SerieComp)
+        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
+        GROUP BY c.Serie,c.Tipo_Comprobante,c.Nro_Facturacion
+        ORDER BY a.Serie DESC,a.Nro_Facturacion DESC, a.Fecha_Emision DESC;'''%(Cod_Soc,Año,TipoComprobante)
         Fac=consultarSql(sqlFac)
 
         self.twFacturacion.clear()
@@ -148,10 +122,9 @@ class SeleccionarFacturacion(QDialog):
         buscarTabla(self.twFacturacion, self.lePalabra.text(), [1,2,3,4])
 
     def Facturacion(self,item):
-        global Serie,Nro_Facturacion,Tipo_Comprobante
+        global Serie,Nro_Facturacion
         Serie=item.text(0)
         Nro_Facturacion=item.text(1)
-        Tipo_Comprobante=item.text(7)
         self.close()
 
 class VerCuotas(QDialog):
@@ -209,10 +182,11 @@ class ERP_Facturacion_Notas(QMainWindow):
         Cod_Usuario='2021100004'
 
         self.cbTipo_Nota.activated.connect(self.cargarSerie)
+        self.cbSerie.activated.connect(self.activarBusqueda)
 
         self.pbSelec_Nota.clicked.connect(self.SeleccionarNota)
-        self.pbSelec_Factura.clicked.connect(self.SeleccionarFacturacion)
-        self.pbSelec_Boleta.clicked.connect(self.SeleccionarFacturacion)
+        self.pbSelec_Factura.clicked.connect(self.SeleccionarFactura)
+        self.pbSelec_Boleta.clicked.connect(self.SeleccionarBoleta)
 
         self.pbLimpiar.clicked.connect(self.Limpiar)
 
@@ -288,6 +262,8 @@ class ERP_Facturacion_Notas(QMainWindow):
             dicMatSUNAT[dato[0]]=dato[1]
 
     def botones(self):
+        self.pbSelec_Factura.setEnabled(False)
+        self.pbSelec_Boleta.setEnabled(False)
         self.pbGrabar.setEnabled(False)
         self.pbEnviar_SUNAT.setEnabled(False)
         self.pbAbrirPDF.setEnabled(False)
@@ -333,13 +309,14 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.cbSerie.clear()
         self.cbMotivo.clear()
         tipo_nota=self.cbTipo_Nota.currentText()
-        listSeries=[]
-        for datos in TipSerie.values():
-            for i in datos:
-                if i not in listSeries:
-                    listSeries.append(i)
-        listSeries.sort(reverse=True)
-        for i in listSeries:
+        # listSeries=[]
+        # for datos in TipSerie.values():
+        #     for i in datos:
+        #         if i not in listSeries:
+        #             listSeries.append(i)
+        # listSeries.sort(reverse=True)
+        # for i in listSeries:
+        for i in TipSerie:
             self.cbSerie.addItem(i)
             self.cbSerie.setCurrentIndex(-1)
 
@@ -357,6 +334,18 @@ class ERP_Facturacion_Notas(QMainWindow):
         #     if len(NroDocumento)==11:
         #         if self.cbSerie.currentText()=='B001':
         #             self.leRUC.setText(NroDocumento[2:10])
+
+    def activarBusqueda(self):
+        Serie=self.cbSerie.currentText()
+        if Serie=='F001':
+            self.pbSelec_Factura.setEnabled(True)
+            self.pbSelec_Boleta.setEnabled(False)
+        elif Serie=='B001':
+            self.pbSelec_Factura.setEnabled(False)
+            self.pbSelec_Boleta.setEnabled(True)
+        if Serie=='0001':
+            self.pbSelec_Factura.setEnabled(True)
+            self.pbSelec_Boleta.setEnabled(True)
 
     def numeroDescuentoGlobal(self):
         validarNumero(self.leDescuento_Global)
@@ -514,24 +503,48 @@ class ERP_Facturacion_Notas(QMainWindow):
     #
     #     VerCuotas(Cod_Cliente,Nro_Cotización).exec_()
 
-    def SeleccionarFacturacion(self):
-        global Serie,Nro_Facturacion,Tipo_Comprobante
+    def SeleccionarFactura(self):
+        global Serie,Nro_Facturacion
         Serie=None
         Nro_Facturacion=None
-        Tipo_Comprobante=None
 
         TipNota=self.cbTipo_Nota.currentText()
         Serienota=self.cbSerie.currentText()
+        TipoComprobante='1'
         if len(TipNota)!=0 and len(Serienota)!=0:
-            for k,v in TipSerie.items():
-                if Serienota in v:
-                    TipoComp=k
-            for k,v in TipComprobante.items():
-                if TipoComp==k:
-                    TipoComprobante=v
-            print(TipoComprobante)
-            SeleccionarFacturacion(Serienota).exec_()
-            # SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
+            # for k,v in TipSerie.items():
+            #     if Serienota in v:
+            #         TipoComp=k
+            # for k,v in TipComprobante.items():
+            #     if TipoComp==k:
+            #         TipoComprobante=v
+            # print(TipoComprobante)
+            # SeleccionarFacturacion(Serienota).exec_()
+            SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
+            self.CargarFacturacion()
+        elif len(TipNota)!=0 and len(Serienota)==0:
+            mensajeDialogo('informacion','Información','Seleccione Serie')
+        else:
+            mensajeDialogo('informacion','Información','Seleccione Tipo de Comprobante y la Serie')
+
+    def SeleccionarBoleta(self):
+        global Serie,Nro_Facturacion
+        Serie=None
+        Nro_Facturacion=None
+
+        TipNota=self.cbTipo_Nota.currentText()
+        Serienota=self.cbSerie.currentText()
+        TipoComprobante='2'
+        if len(TipNota)!=0 and len(Serienota)!=0:
+            # for k,v in TipSerie.items():
+            #     if Serienota in v:
+            #         TipoComp=k
+            # for k,v in TipComprobante.items():
+            #     if TipoComp==k:
+            #         TipoComprobante=v
+            # print(TipoComprobante)
+            # SeleccionarFacturacion(Serienota).exec_()
+            SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
             self.CargarFacturacion()
         elif len(TipNota)!=0 and len(Serienota)==0:
             mensajeDialogo('informacion','Información','Seleccione Serie')

@@ -212,21 +212,6 @@ QTreeWidget
          <set>AlignCenter</set>
         </property>
        </column>
-       <column>
-        <property name="text">
-         <string>TC</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-       </column>
       </widget>
      </item>
     </layout>

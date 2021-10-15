@@ -621,7 +621,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
            </font>
           </property>
           <property name="toolTip">
-           <string>Factura</string>
+           <string>Boleta</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
