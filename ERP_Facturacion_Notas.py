@@ -512,16 +512,8 @@ class ERP_Facturacion_Notas(QMainWindow):
         Serienota=self.cbSerie.currentText()
         TipoComprobante='1'
         if len(TipNota)!=0 and len(Serienota)!=0:
-            # for k,v in TipSerie.items():
-            #     if Serienota in v:
-            #         TipoComp=k
-            # for k,v in TipComprobante.items():
-            #     if TipoComp==k:
-            #         TipoComprobante=v
-            # print(TipoComprobante)
-            # SeleccionarFacturacion(Serienota).exec_()
             SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
-            self.CargarFacturacion()
+            self.CargarFacturacion(TipoComprobante)
         elif len(TipNota)!=0 and len(Serienota)==0:
             mensajeDialogo('informacion','Información','Seleccione Serie')
         else:
@@ -536,38 +528,41 @@ class ERP_Facturacion_Notas(QMainWindow):
         Serienota=self.cbSerie.currentText()
         TipoComprobante='2'
         if len(TipNota)!=0 and len(Serienota)!=0:
-            # for k,v in TipSerie.items():
-            #     if Serienota in v:
-            #         TipoComp=k
-            # for k,v in TipComprobante.items():
-            #     if TipoComp==k:
-            #         TipoComprobante=v
-            # print(TipoComprobante)
-            # SeleccionarFacturacion(Serienota).exec_()
             SeleccionarFacturacion(TipoComprobante,Serienota).exec_()
-            self.CargarFacturacion()
+            self.CargarFacturacion(TipoComprobante)
         elif len(TipNota)!=0 and len(Serienota)==0:
             mensajeDialogo('informacion','Información','Seleccione Serie')
         else:
             mensajeDialogo('informacion','Información','Seleccione Tipo de Comprobante y la Serie')
 
-    def CargarFacturacion(self):
+    def CargarFacturacion(self,TipoComprobante):
         try:
             sqlCabFact='''SELECT b.Razon_social,b.Direcc_cliente,b.RUC,b.Representante_Cliente,b.DNI,b.Correo_Representante,a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global
             FROM TAB_VENTA_009_Cabecera_Facturacion a
             LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
             LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,Tipo_Comprobante,Serie,Nro_Facturacion)
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
             lista=convlist(sqlCabFact)
 
-            sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_con_IGV, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
+            # sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_con_IGV, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
+            # FROM TAB_VENTA_010_Detalle_Facturacion a
+            # LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Soc=a.Cod_Soc AND b.Cod_Mat=a.Cod_Material
+            # LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
+            # LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
+            # LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
+            # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
+            # GROUP BY e.Cod_Mat
+            # ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
+
+            sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
             FROM TAB_VENTA_010_Detalle_Facturacion a
             LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Soc=a.Cod_Soc AND b.Cod_Mat=a.Cod_Material
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
-            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,Tipo_Comprobante,Serie,Nro_Facturacion)
+            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            GROUP BY e.Cod_Mat
+            ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
 
             for i in range(len(lista)):
                 if lista[i]=='0':
@@ -592,7 +587,7 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             self.leRazon_Social.setText(lista[0])
             self.leDireccion.setText(lista[1])
-            if Tipo_Comprobante=='2':
+            if TipoComprobante=='2':
                 if len(lista[2])==11:
                     lista[2]=lista[2][2:10]
             self.leRUC.setText(lista[2])
@@ -617,9 +612,9 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             self.leMoneda.setText(lista[8])
 
-            if lista[9]=='0.00':
-                lista[9]=""
-            self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
+            # if lista[9]=='0.00':
+            #     lista[9]=""
+            # self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
 
             CargarFactNota(sqlDetFact,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()

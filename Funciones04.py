@@ -2948,16 +2948,28 @@ def CargarFactNota(sql,tw,self):
         row=0
         for fila in informacion:
             fila[7]='0.00'
-            PrecioconIGV=float(fila[6])*(1+(porcentaje_de_igv/100))
-            DescuentoconIGV=float(fila[7])*(1+(porcentaje_de_igv/100))
-            PreciofinalconIGV=PrecioconIGV-(DescuentoconIGV/float(fila[5]))
-            Subtotal=float(fila[5])*PreciofinalconIGV
-            fila.insert(7,str(PrecioconIGV))
-            fila.insert(9,str(DescuentoconIGV))
-            fila.insert(10,str(PreciofinalconIGV))
-            fila.insert(11,str(Subtotal))
+            fila[6]=fila[8]
+            # PrecioconIGV=float(fila[6])*(1+(porcentaje_de_igv/100))
+            # DescuentoconIGV=float(fila[7])*(1+(porcentaje_de_igv/100))
+            # PreciofinalconIGV=PrecioconIGV-(DescuentoconIGV/float(fila[5]))
+            # Subtotal=float(fila[5])*PreciofinalconIGV
+            # fila.insert(7,str(PrecioconIGV))
+            # fila.insert(9,str(DescuentoconIGV))
+            # fila.insert(10,str(PreciofinalconIGV))
+            # fila.insert(11,str(Subtotal))
+            # fila[5]=formatearDecimal(fila[5],'3')
+            # fila[6]=formatearDecimal(fila[6],'2')
+            # fila[7]=formatearDecimal(fila[7],'2')
+            # fila[8]=formatearDecimal(fila[8],'2')
+            # fila[9]=formatearDecimal(fila[9],'2')
+            # fila[10]=formatearDecimal(fila[10],'2')
+            # fila[11]=formatearDecimal(fila[11],'2')
+            PreciosinIGV=float(fila[6])*(1/(1+(porcentaje_de_igv/100)))
+            DescuentosinIGV=float(fila[7])*(1/(1+(porcentaje_de_igv/100)))
+            fila.insert(6,str(PreciosinIGV))
+            fila.insert(8,str(DescuentosinIGV))
             fila[5]=formatearDecimal(fila[5],'3')
-            fila[6]=formatearDecimal(fila[6],'2')
+            fila[6]=formatearDecimal(fila[6],'4')
             fila[7]=formatearDecimal(fila[7],'2')
             fila[8]=formatearDecimal(fila[8],'2')
             fila[9]=formatearDecimal(fila[9],'2')
