@@ -612,9 +612,9 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             self.leMoneda.setText(lista[8])
 
-            # if lista[9]=='0.00':
-            #     lista[9]=""
-            # self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
+            if lista[9]=='0.00':
+                lista[9]=""
+            self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
 
             CargarFactNota(sqlDetFact,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()
