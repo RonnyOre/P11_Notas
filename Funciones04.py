@@ -33,6 +33,7 @@ tokenFacturacion="c3992ada327745ac9034af1af4ab879ff6119a5d8d1b46ab8404069fadee55
 #-------------------------------- Funciones Generales ----------------------------------
 
 def ejecutarSql(sql):
+    print(sql)
     datos = {'accion':'ejecutar','sql': sql}
     x = requests.post(url, data = datos)
     if x.text!="":
