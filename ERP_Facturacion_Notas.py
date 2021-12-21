@@ -55,7 +55,7 @@ class SeleccionarNota(QDialog):
 
         cargarIcono(self, 'erp')
 
-        sqlNota='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
+        sqlNota='''SELECT a.Serie, a.Nro_Facturacion, a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
         FROM TAB_VENTA_011_Cabecera_Notas a
         LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
         LEFT JOIN TAB_VENTA_012_Detalle_Notas c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
@@ -86,7 +86,6 @@ class SeleccionarNota(QDialog):
         self.close()
 
 class SeleccionarFacturacion(QDialog):
-    # def __init__(self,SerieComp):
     def __init__(self,SerieComp):
         QDialog.__init__(self)
         uic.loadUi("ERP_Consulta_Documento.ui",self)
@@ -96,18 +95,22 @@ class SeleccionarFacturacion(QDialog):
 
         cargarIcono(self, 'erp')
 
-        sqlFac='''SELECT a.Serie,a.Nro_Facturacion,a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura
+        sqlFac='''SELECT a.Serie, a.Nro_Facturacion, a.Fecha_Emision, b.Razon_social, b.RUC, SUM(c.Sub_Total), a.Estado_Factura, d.Razon_Social, d.RUC_Factura
         FROM TAB_VENTA_009_Cabecera_Facturacion a
         LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
         LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
+        LEFT JOIN TAB_VENTA_015_RUC_DE_FACTURA d ON a.Cod_Soc=d.Cod_Soc AND a.Año=d.Año AND a.Nro_Cotización=d.Nro_Cot
         WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
-        GROUP BY c.Serie,c.Tipo_Comprobante,c.Nro_Facturacion
-        ORDER BY a.Serie DESC,a.Nro_Facturacion DESC, a.Fecha_Emision DESC;'''%(Cod_Soc,Año,TipoComprobante)
+        GROUP BY c.Nro_Facturacion
+        ORDER BY a.Nro_Facturacion DESC, a.Fecha_Emision DESC;'''%(Cod_Soc,Año,TipoComprobante)
         Fac=consultarSql(sqlFac)
 
         self.twFacturacion.clear()
         for fila in Fac:
             fila[6]=EstadoFactura[fila[6]]
+            if fila[8]!=None and fila[8]!=fila[4]:
+                fila[3]=fila[7]
+                fila[4]=fila[8]
             item=QTreeWidgetItem(self.twFacturacion,fila)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
             for i in range(len(fila)):
@@ -177,7 +180,9 @@ class ERP_Facturacion_Notas(QMainWindow):
         global Cod_Soc,Nom_Soc,Cod_Usuario
         global Año,dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT
 
-        Cod_Soc='1000'
+        # Cod_Soc='1000'
+        # Nom_Soc='MULTI PLAY TELECOMUNICACIONES S.A.C'
+        Cod_Soc='2000'
         Nom_Soc='MULTICABLE PERU S.A.C.'
         Cod_Usuario='2021100004'
 
@@ -356,63 +361,54 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def cargarMontos(self):
         try:
-            list_cantidad = []
-            list_precio_sinIGV  = []
-            list_descuento_sinIGV= []
+            list_descuento_sinIGV = []
+            list_subtotal = []
 
             for i in range(self.tbwCotizacion_Cliente.rowCount()):
                 try:
-                    list_cantidad.append(self.tbwCotizacion_Cliente.item(i,5).text())
-                except:
-                    list_cantidad.append("")
-                try:
-                    list_precio_sinIGV.append(self.tbwCotizacion_Cliente.item(i,6).text())
-                except:
-                    list_precio_sinIGV.append("")
-                try:
-                    desc=self.tbwCotizacion_Cliente.item(i,8).text()
-                    d = desc.replace(",","")
-                    list_descuento_sinIGV.append(float(d))
+                    columna8=self.tbwCotizacion_Cliente.item(i,8).text()
+                    descuento_sinIGV = columna8.replace(",","")
+                    list_descuento_sinIGV.append(float(descuento_sinIGV))
                 except:
                     list_descuento_sinIGV.append("")
+                try:
+                    columna11=self.tbwCotizacion_Cliente.item(i,11).text()
+                    subtotal = columna11.replace(",","")
+                    list_subtotal.append(float(subtotal))
+                except:
+                    list_subtotal.append("")
 
-            list_cantxprecio = []
-            for i in range(len(list_cantidad)):
-                c = list_cantidad[i].replace(",","")
-                p = list_precio_sinIGV[i].replace(",","")
-                cant_x_precio= float(c) * float(p)
-                list_cantxprecio.append(cant_x_precio)
-                i += 1
+                TipoCambio=self.leTipo_Cambio.text()
+                DescuentoItem=sum(list_descuento_sinIGV)
+                DGlobal=self.leDescuento_Global.text()
+                if len(DGlobal)==0:
+                    DescuentoGlobal="0.00"
+                    self.leDescuento_Global_Soles.clear()
+                else:
+                    DescuentoGlobal=DGlobal.replace(",","")
+                    self.leDescuento_Global_Soles.setText(formatearDecimal(str(float(DescuentoGlobal)*float(TipoCambio)),'2'))
 
-            TipoCambio=self.leTipo_Cambio.text()
-            Subtotal=sum(list_cantxprecio)
-            DescuentoItem=sum(list_descuento_sinIGV)
-            DescuentoGlobal=self.leDescuento_Global.text()
-            if len(DescuentoGlobal)==0:
-                DescuentoGlobal="0.00"
-                self.leDescuento_Global_Soles.clear()
-            else:
-                DescuentoGlobal=DescuentoGlobal.replace(",","")
-                self.leDescuento_Global_Soles.setText(formatearDecimal(str(float(DescuentoGlobal)*float(TipoCambio)),'2'))
-            DescuentoTotal=DescuentoItem+float(DescuentoGlobal)
-            TotalsinIGV=Subtotal-DescuentoTotal
-            IGV=0.18*TotalsinIGV
-            Total=TotalsinIGV+IGV
+                Total=sum(list_subtotal)-(float(DescuentoGlobal)*1.18)
+                TotalsinIGV=Total/1.18
+                IGV=Total-TotalsinIGV
+                Subtotal=DescuentoItem+float(DescuentoGlobal)+TotalsinIGV
 
-            self.leSub_Total.setText(formatearDecimal(str(Subtotal),'2'))
-            self.leDescuento_Item.setText(formatearDecimal(str(DescuentoItem),'2'))
-            self.leTotal_SinIGV.setText(formatearDecimal(str(TotalsinIGV),'2'))
-            self.leIGV.setText(formatearDecimal(str(IGV),'2'))
-            self.leTotal.setText(formatearDecimal(str(Total),'2'))
+                self.leSub_Total.setText(formatearDecimal(str(Subtotal),'2'))
+                self.leDescuento_Item.setText(formatearDecimal(str(DescuentoItem),'2'))
+                self.leTotal_SinIGV.setText(formatearDecimal(str(TotalsinIGV),'2'))
+                self.leIGV.setText(formatearDecimal(str(IGV),'2'))
+                self.leTotal.setText(formatearDecimal(str(Total),'2'))
 
-            self.leSub_Total_Soles.setText(formatearDecimal(str(Subtotal*float(TipoCambio)),'2'))
-            self.leDescuento_Item_Soles.setText(formatearDecimal(str(DescuentoItem*float(TipoCambio)),'2'))
-            self.leTotal_SinIGV_Soles.setText(formatearDecimal(str(TotalsinIGV*float(TipoCambio)),'2'))
-            self.leIGV_Soles.setText(formatearDecimal(str(IGV*float(TipoCambio)),'2'))
-            self.leTotal_Soles.setText(formatearDecimal(str(Total*float(TipoCambio)),'2'))
+                self.leSub_Total_Soles.setText(formatearDecimal(str(Subtotal*float(TipoCambio)),'2'))
+                self.leDescuento_Item_Soles.setText(formatearDecimal(str(DescuentoItem*float(TipoCambio)),'2'))
+                self.leTotal_SinIGV_Soles.setText(formatearDecimal(str(TotalsinIGV*float(TipoCambio)),'2'))
+                self.leIGV_Soles.setText(formatearDecimal(str(IGV*float(TipoCambio)),'2'))
+                self.leTotal_Soles.setText(formatearDecimal(str(Total*float(TipoCambio)),'2'))
 
         except Exception as e:
-            print(e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
 
     def bloquearDatos(self):
 
@@ -537,14 +533,15 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def CargarFacturacion(self):
         try:
-            sqlCabFact='''SELECT b.Razon_social,b.Direcc_cliente,b.RUC,b.Representante_Cliente,b.DNI,b.Correo_Representante,a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global
+            sqlCabFact='''SELECT b.Razon_social, b.Direcc_cliente, b.RUC, b.Representante_Cliente, b.DNI,b.Correo_Representante, a.Tipo_Operación,a.Forma_Pago,c.Descrip_moneda,a.Descuento_Global,d.Razon_Social,d.Direccion,d.RUC_Factura
             FROM TAB_VENTA_009_Cabecera_Facturacion a
             LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
             LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
+            LEFT JOIN TAB_VENTA_015_RUC_DE_FACTURA d ON a.Cod_Soc=d.Cod_Soc AND a.Año=d.Año AND a.Nro_Cotización=d.Nro_Cot
             WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
             lista=convlist(sqlCabFact)
 
-            sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
+            sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, a.Unidad, a.Cantidad, a.Precio_sin_IGV, a.Precio_con_IGV, a.Descuento_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
             FROM TAB_VENTA_010_Detalle_Facturacion a
             LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Soc=a.Cod_Soc AND b.Cod_Mat=a.Cod_Material
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
@@ -575,12 +572,39 @@ class ERP_Facturacion_Notas(QMainWindow):
                 self.leSerie_Numero.setText(Serie+"-"+Nro_Facturacion)
                 self.botones()
 
-            self.leRazon_Social.setText(lista[0])
-            self.leDireccion.setText(lista[1])
-            if TipoComprobante=='2':
-                if len(lista[2])==11:
-                    lista[2]=lista[2][2:10]
-            self.leRUC.setText(lista[2])
+#############################################################
+
+            if lista[12]!=None and lista[12]!=lista[2]:
+                self.leRazon_Social.setText(lista[10])
+                self.leDireccion.setText(lista[11])
+                if TipoComprobante=='2':
+                    if len(lista[12])==11:
+                        self.leRUC.setText(lista[12][2:10])
+                    else:
+                        self.leRUC.setText(lista[12])
+                else:
+                    self.leRUC.setText(lista[12])
+
+            else:
+                self.leRazon_Social.setText(lista[0])
+                self.leDireccion.setText(lista[1])
+                if TipoComprobante=='2':
+                    if len(lista[2])==11:
+                        self.leRUC.setText(lista[2][2:10])
+                    else:
+                        self.leRUC.setText(lista[2])
+                else:
+                    self.leRUC.setText(lista[2])
+
+#############################################################
+            # self.leRazon_Social.setText(lista[0])
+            # self.leDireccion.setText(lista[1])
+            # if TipoComprobante=='2':
+            #     if len(lista[2])==11:
+            #         lista[2]=lista[2][2:10]
+            # self.leRUC.setText(lista[2])
+
+
             self.leInterlocutor.setText(lista[3])
             self.leDNI.setText(lista[4])
             self.leCorreo.setText(lista[5])
@@ -604,10 +628,10 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             self.leDescuento_Global.setText('0.00')
 
-            CargarFactNota(sqlDetFact,self.tbwCotizacion_Cliente,lista[9],self)
+            CargarFact(sqlDetFact,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()
 
-            sqlVerificar="SELECT Nro_Cotización FROM TAB_VENTA_009_Cabecera_Facturacion WHERE Serie='%s';"%(self.cbSerie.currentText())
+            sqlVerificar="SELECT Doc_Modifica FROM TAB_VENTA_011_Cabecera_Notas WHERE Serie='%s';"%(self.cbSerie.currentText())
             guardadas=convlist(sqlVerificar)
             print(guardadas)
             if Serie+'-'+Nro_Facturacion in guardadas:
@@ -617,7 +641,9 @@ class ERP_Facturacion_Notas(QMainWindow):
                 self.pbGrabar.setEnabled(True)
 
         except Exception as e:
-            print(e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
 
     def Grabar(self):
         try:

@@ -9,6 +9,7 @@ from PyQt5.QtGui import *
 from diccionario_sunat import *
 import urllib.request
 from PyQt5 import *
+from funciones_4everybody import *
 
 import pathlib
 import smtplib
@@ -24,9 +25,9 @@ TipComprobante={'FACTURA':'1','BOLETA':'2','NOTA DE CRÉDITO':'3','NOTA DE DÉBI
 porcentaje_de_igv=18.00
 rutaBase=os.getcwd()
 
-db=mysql.connector.connect(host="67.23.254.35",user="multipla_admin",passwd="multiplay123",database="multipla_pruebas")
-
-url = 'https://www.multiplay.com.pe/consultas/consulta-prueba.php'
+# db=mysql.connector.connect(host="67.23.254.35",user="multipla_admin",passwd="multiplay123",database="multipla_pruebas")
+#
+# url = 'https://www.multiplay.com.pe/consultas/consulta-prueba.php'
 rutaFacturacion="https://api.nubefact.com/api/v1/bad6db4a-3f1c-4f93-b364-bcd30093df5f"
 tokenFacturacion="c3992ada327745ac9034af1af4ab879ff6119a5d8d1b46ab8404069fadee556a"
 
@@ -189,6 +190,18 @@ def buscarTabla(tw, texto, columnas):
                     tw.topLevelItem(i).setHidden(False)
     except Exception as e:
         mensajeDialogo("error", "buscarTabla", e)
+
+def insertarFila(col,item,Derecha,Izquierda,Centro):
+    try:
+
+        if col in Derecha:
+            item.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        if col in Izquierda:
+            item.setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        if col in Centro:
+            item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+    except:
+        item.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
 def validarCorreo(lineEdit):
     correo = lineEdit.text()
@@ -2407,7 +2420,7 @@ def CargarBindCard(informacion,tbw,self):
 
 #--------------------------------Programa N° 10 - ERP_FACTURA----------------------------------
 
-def CargarCot(sql,tw,self):
+def CargarCot(sql,tw,stock,self):
     tw.clearContents()
     informacion=consultarSql(sql)
     if informacion!=[]:
@@ -2417,16 +2430,22 @@ def CargarCot(sql,tw,self):
         flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         row=0
         for fila in informacion:
+
+            Stock_disponible=stock[fila[8]][0]
+            Stock_bloq_QA=stock[fila[8]][1]
             PrecioconIGV=float(fila[6])*(1+(porcentaje_de_igv/100))
-            DescuentoconIGV=float(fila[7])*(1+(porcentaje_de_igv/100))
-            PreciofinalconIGV=PrecioconIGV-(DescuentoconIGV/float(fila[5]))
+            PreciofinalconIGV=float(fila[7])
             Subtotal=float(fila[5])*PreciofinalconIGV
+            DescuentosinIGV=((float(fila[5])*PrecioconIGV)-Subtotal)*(1/(1+(porcentaje_de_igv/100)))
+            DescuentoconIGV=(DescuentosinIGV)*(1+(porcentaje_de_igv/100))
             fila.insert(7,str(PrecioconIGV))
+            fila.insert(8,str(DescuentosinIGV))
             fila.insert(9,str(DescuentoconIGV))
-            fila.insert(10,str(PreciofinalconIGV))
             fila.insert(11,str(Subtotal))
+            fila.insert(12,str(Stock_disponible))
+            fila.insert(13,str(Stock_bloq_QA))
             fila[5]=formatearDecimal(fila[5],'3')
-            fila[6]=formatearDecimal(fila[6],'2')
+            fila[6]=formatearDecimal(fila[6],'10')
             fila[7]=formatearDecimal(fila[7],'2')
             fila[8]=formatearDecimal(fila[8],'2')
             fila[9]=formatearDecimal(fila[9],'2')
@@ -2444,10 +2463,11 @@ def CargarCot(sql,tw,self):
             for i in fila:
                 item=QTableWidgetItem(i)
                 item.setFlags(flags)
+                insertarFila(col,item,[5,6,7,8,9,10,11,12,13],[1,2],[0,3,4,14,15])
                 if tw.rowCount()<=row:
                     tw.insertRow(tw.rowCount())
                 tw.setItem(row,col, item)
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # item.setTextAlignment(QtCore.Qt.AlignCenter)
                 tw.resizeColumnToContents(col)
                 col += 1
             row+=1
@@ -2460,16 +2480,12 @@ def CargarFact(sql,tw,self):
     if informacion!=[]:
         rows=tw.rowCount()
         for r in range(rows):
-            tw.removeRow(1)
+            tw.removeRow(0)
         flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         row=0
         for fila in informacion:
-            PrecioconIGV=float(fila[6])*(1+(porcentaje_de_igv/100))
-            DescuentoconIGV=float(fila[7])*(1+(porcentaje_de_igv/100))
-            fila.insert(7,str(PrecioconIGV))
-            fila.insert(9,str(DescuentoconIGV))
             fila[5]=formatearDecimal(fila[5],'3')
-            fila[6]=formatearDecimal(fila[6],'2')
+            fila[6]=formatearDecimal(fila[6],'10')
             fila[7]=formatearDecimal(fila[7],'2')
             fila[8]=formatearDecimal(fila[8],'2')
             fila[9]=formatearDecimal(fila[9],'2')
@@ -2487,10 +2503,11 @@ def CargarFact(sql,tw,self):
             for i in fila:
                 item=QTableWidgetItem(i)
                 item.setFlags(flags)
+                insertarFila(col,item,[5,6,7,8,9,10,11,12,13],[1,2],[0,3,4,14,15])
                 if tw.rowCount()<=row:
                     tw.insertRow(tw.rowCount())
                 tw.setItem(row,col, item)
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # item.setTextAlignment(QtCore.Qt.AlignCenter)
                 tw.resizeColumnToContents(col)
                 col += 1
             row+=1
