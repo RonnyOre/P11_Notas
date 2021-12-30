@@ -228,6 +228,19 @@ def formatearFecha(fecha):
     fecha.reverse()
     return "-".join(fecha)
 
+def fechaDiaHoy(dateEdit):
+    fecha = QtCore.QDateTime.fromString(str(date.today()), "yyyy-MM-dd")
+    dateEdit.setDateTime(fecha)
+
+def extraerFechaCalendario(de, le):
+    fechaDiaHoy(de)
+    de.calendarWidget().clicked.connect(lambda checked = False, identificador = [de, le] : extraerFecha(identificador))
+
+def extraerFecha(identificador):
+    de = identificador[0]
+    le = identificador[1]
+    le.setText(QDateToStrView(de))
+
 def formatearDecimal(str, nro):
     try:
         decimal = float(str)
@@ -2514,8 +2527,8 @@ def CargarFact(sql,tw,self):
     else:
         mensajeDialogo("informacion", "Información","No se encontraron registros")
 
-def generarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, sunat_transaction, cliente_tipo_de_documento, ruc, razonSocial, direccion, correo, fechaEmision, fechaVencimiento, moneda, tipoDeCambio, descuento_global, total_descuento, totalGravada, totalIgv, total, condicionesDePago, tbwCuotas, orden_compra_servicio, tipo_de_igv, guia_tipo, nombreArchivo, tbwCotizacion_Cliente, tipo_de_nota_de_credito, tipo_de_nota_de_debito, self):
-    if Cod_Soc!="1000":
+def generarDocumento(Cod_Soc,TipFact,Año,tipo_de_comprobante, serie, numero, sunat_transaction, cliente_tipo_de_documento, ruc, razonSocial, direccion, correo, fechaEmision, fechaVencimiento, moneda, tipoDeCambio, descuento_global, total_descuento, totalGravada, totalIgv, total, condicionesDePago, tbwCuotas, orden_compra_servicio, tipo_de_igv, guia_tipo, nombreArchivo, tbwCotizacion_Cliente, tipo_de_nota_de_credito, tipo_de_nota_de_debito, NomTabla, self):
+    if TipFact!="1":
         mensajeDialogo("informacion", "Facturación Electrónica", "Función válida solo para Multicable")
         return
     if self.leURL.text()=="":
@@ -2595,7 +2608,10 @@ def generarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, sunat_tran
                 data["enviar_automaticamente_a_la_sunat"] = True
                 data["enviar_automaticamente_al_cliente"] = False if correo=="" else True
                 data["condiciones_de_pago"] = condicionesDePago
-                data["medio_de_pago"] = ""
+                if condicionesDePago == 'CONTADO':
+                    data["medio_de_pago"] = condicionesDePago
+                else:
+                    data["medio_de_pago"] = "venta_al_credito"
                 data["placa_vehiculo"] = ""
                 data["orden_compra_servicio"] = orden_compra_servicio
                 data["formato_de_pdf"] = ""
@@ -2686,6 +2702,9 @@ def generarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, sunat_tran
                     respuesta=respuesta.json()
                     if respuesta["aceptada_por_sunat"]:
                         enlace=respuesta["enlace"]
+                        self.pbEnviar_SUNAT.setEnabled(False)
+                        self.pbAbrirPDF.setEnabled(True)
+                        self.pbAnular_Factura.setEnabled(True)
                     else:
                         sunat_description=respuesta["sunat_description"]
                         sunat_note=respuesta["sunat_note"]
@@ -2698,7 +2717,7 @@ def generarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, sunat_tran
                             mensaje_error.append(sunat_note)
                         if sunat_responsecode!=None:
                             mensaje_error.append(sunat_responsecode)
-                        if sunat_soap_error!='':
+                        if sunat_soap_error!='' and sunat_soap_error!=None:
                             mensaje_error.append(sunat_soap_error)
 
                         if mensaje_error==[]:
@@ -2708,25 +2727,21 @@ def generarDocumento(Cod_Soc,Año,tipo_de_comprobante, serie, numero, sunat_tran
 
                     self.leURL.setText(enlace)
                     self.leURL.setReadOnly(True)
-                    sql="UPDATE TAB_VENTA_009_Cabecera_Facturacion SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (enlace, Cod_Soc, Año, dict_tipo_de_comprobante[tipo_de_comprobante], serie, numero)
+                    sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, Año, dict_tipo_de_comprobante[tipo_de_comprobante], serie, numero)
                     respuesta=ejecutarSql(sql)
                     if respuesta["respuesta"]=="incorrecto":
                         mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
                         return
                 elif respuesta.status_code==400:
-                    consultarDocumentoError(Cod_Soc,Año,dict_tipo_de_comprobante[tipo_de_comprobante],serie,numero,self)
-
-                self.pbEnviar_SUNAT.setEnabled(False)
-                self.pbAbrirPDF.setEnabled(True)
-                self.pbAnular_Factura.setEnabled(True)
+                    consultarDocumentoError(Cod_Soc, TipFact, Año, dict_tipo_de_comprobante[tipo_de_comprobante], serie, numero,NomTabla, self)
 
             except Exception as e:
                 mensajeDialogo("error", "generarDocumento", e)
                 print(e)
 
-def consultarDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
+def consultarDocumento(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, numero, NomTabla, self):
     try:
-        if Cod_Soc!="1000":
+        if TipFact!="1":
             mensajeDialogo("informacion", "Facturación Electrónica", "Función válida solo para Multicable")
             return
         data = {}
@@ -2757,7 +2772,7 @@ def consultarDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
                     mensaje_error.append(sunat_note)
                 if sunat_responsecode!=None:
                     mensaje_error.append(sunat_responsecode)
-                if sunat_soap_error!='':
+                if sunat_soap_error!='' and sunat_soap_error!=None:
                     mensaje_error.append(sunat_soap_error)
 
                 if mensaje_error==[]:
@@ -2767,7 +2782,7 @@ def consultarDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
 
             if self.leURL.text()!=enlace:
                 self.leURL.setText(enlace)
-                sql="UPDATE TAB_VENTA_009_Cabecera_Facturacion SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (enlace, Cod_Soc,Año, tipo_de_comprobante, serie, numero)
+                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc,Año, tipo_de_comprobante, serie, numero)
                 respuesta=ejecutarSql(sql)
                 if respuesta["respuesta"]=="incorrecto":
                     mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2777,9 +2792,9 @@ def consultarDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
     except Exception as e:
         mensajeDialogo("error", "consultarDocumento", e)
 
-def consultarDocumentoError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
+def consultarDocumentoError(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, numero, NomTabla, self):
     try:
-        if Cod_Soc!="1000":
+        if TipFact!="1":
             mensajeDialogo("informacion", "Facturación Electrónica", "Función válida solo para Multicable")
             return
         data = {}
@@ -2809,7 +2824,7 @@ def consultarDocumentoError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, s
                     mensaje_error.append(sunat_note)
                 if sunat_responsecode!=None:
                     mensaje_error.append(sunat_responsecode)
-                if sunat_soap_error!='':
+                if sunat_soap_error!='' and sunat_soap_error!=None:
                     mensaje_error.append(sunat_soap_error)
 
                 if mensaje_error==[]:
@@ -2819,7 +2834,7 @@ def consultarDocumentoError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, s
             if self.leURL.text()!=enlace:
                 self.leURL.setText(enlace)
                 self.leURL.setReadOnly(True)
-                sql="UPDATE TAB_VENTA_009_Cabecera_Facturacion SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';" % (enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
+                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';" % (NomTabla, enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
                 respuesta=ejecutarSql(sql)
                 if respuesta["respuesta"]=="incorrecto":
                     mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2829,9 +2844,9 @@ def consultarDocumentoError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, s
     except Exception as e:
         mensajeDialogo("error", "consultarDocumentoError", e)
 
-def anularDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, self):
+def anularDocumento(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, numero, motivo, NomTabla, self):
     try:
-        if Cod_Soc!="1000":
+        if TipFact!="1":
             mensajeDialogo("informacion", "Facturación Electrónica", "Función válida solo para Multicable")
             return
         if self.leURL.text()=="Documento rechazado":
@@ -2842,7 +2857,7 @@ def anularDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, s
             data['operacion'] = "generar_anulacion"
             data['tipo_de_comprobante'] = dict_tipo_de_comprobante[tipo_de_comprobante]
             data["serie"] = serie
-            data["numero"] = int(numero)
+            data["numero"] = numero
             data["motivo"] = motivo
             data["codigo_unico"] = ""
 
@@ -2856,7 +2871,7 @@ def anularDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, s
                     if respuesta.status_code==200:
                         ruta=respuesta.json()["enlace"]
                     elif respuesta.status_code==400:
-                        validarAnulacionError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, self)
+                        validarAnulacionError(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, numero, motivo, NomTabla, self)
                         return
                     else:
                         ruta="Error"
@@ -2868,14 +2883,14 @@ def anularDocumento(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, s
         self.leURL.setText(ruta)
         tabla=tipo_de_comprobante.lower()
 
-        anularDocumentoSQL(Cod_Soc, Año, tabla, dict_tipo_de_comprobante[tipo_de_comprobante], ruta, serie, numero, self)
+        anularDocumentoSQL(Cod_Soc, TipFact, Año, tabla, dict_tipo_de_comprobante[tipo_de_comprobante], ruta, serie, numero, NomTabla, self)
 
     except Exception as e:
         mensajeDialogo("error", "anularDocumento", e)
 
-def validarAnulacion(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
+def validarAnulacion(Cod_Soc,TipFact, Año, tipo_de_comprobante, serie, numero, NomTabla, self):
     try:
-        if Cod_Soc!="1000":
+        if TipFact!="1":
             mensajeDialogo("informacion", "Facturación Electrónica", "Función válida solo para Multicable")
             return
         data = {}
@@ -2897,7 +2912,7 @@ def validarAnulacion(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
                 enlace="Documento rechazado"
             if self.leURL.text()!=enlace:
                 self.leURL.setText(enlace)
-                sql="UPDATE TAB_VENTA_009_Cabecera_Facturacion SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
+                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
                 respuesta=ejecutarSql(sql)
                 if respuesta["respuesta"]=="incorrecto":
                     mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2907,9 +2922,9 @@ def validarAnulacion(Cod_Soc, Año, tipo_de_comprobante, serie, numero, self):
     except Exception as e:
         mensajeDialogo("error", "validarAnulacion", e)
 
-def validarAnulacionError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, motivo, self):
+def validarAnulacionError(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, numero, motivo, NomTabla, self):
     try:
-        if Cod_Soc!="1000":
+        if TipFact!="1":
             mensajeDialogo("informacion", "Facturación Electrónica", "Función válida solo para Multicable")
             return
         data = {}
@@ -2933,14 +2948,14 @@ def validarAnulacionError(Cod_Soc, Año, tipo_de_comprobante, serie, numero, mot
         self.leURL.setText(ruta)
         tabla=tipo_de_comprobante.lower()
 
-        anularDocumentoSQL(Cod_Soc, Año, tabla, dict_tipo_de_comprobante[tipo_de_comprobante], ruta, serie, numero, self)
+        anularDocumentoSQL(Cod_Soc, TipFact, Año, tabla, dict_tipo_de_comprobante[tipo_de_comprobante], ruta, serie, numero, NomTabla, self)
 
     except Exception as e:
         mensajeDialogo("error", "validarAnulacionError", e)
 
-def anularDocumentoSQL(Cod_Soc, Año, tabla, tipo_de_comprobante, ruta, serie, numero, self):
+def anularDocumentoSQL(Cod_Soc, TipFact, Año, tabla, tipo_de_comprobante, ruta, serie, numero, NomTabla, self):
     try:
-        sql="UPDATE TAB_VENTA_009_Cabecera_Facturacion SET URL='%s', Estado_Factura='1' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (ruta, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
+        sql="UPDATE %s SET URL='%s', Estado_Factura='1' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, ruta, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
         respuesta=ejecutarSql(sql)
         if respuesta["respuesta"]=="incorrecto":
             mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2953,9 +2968,31 @@ def anularDocumentoSQL(Cod_Soc, Año, tabla, tipo_de_comprobante, ruta, serie, n
     except Exception as e:
         mensajeDialogo("error", "anularDocumentoSQL", e)
 
+def actualizarDireccion(RUC, idEmpresa, leDireccion):
+    if len(RUC)==11:
+        respuesta=consultaRucApiPeruDev(False, RUC)
+        if respuesta==False:
+            respuesta=consultaRucApiSPeru(False, RUC) #Direccion completa falta Distrito Departamento Provincia
+        nuevaDireccion=respuesta[3]
+        if nuevaDireccion=="":return
+        direccionAntigua=leDireccion.text()
+        if direccionAntigua!=nuevaDireccion:
+            actualizar=mensajeDialogo("pregunta", "Actualización de Dirección Fiscal", "¿Desea cambiar la dirección del RUC:%s?\nDireccion Antigua:\n%s\nDireccion Nueva:\n%s" % (RUC, direccionAntigua, nuevaDireccion))
+            if actualizar == 'Yes':
+                sql='''UPDATE `TAB_COM_001_Maestro Clientes` SET Direcc_cliente="%s"
+                WHERE Cod_cliente='%s';''' % (nuevaDireccion, idEmpresa)
+                respuesta=ejecutarSql(sql)
+                if respuesta["rollback"]=="True":
+                    sqlOpcional='''UPDATE TAB_VENTA_015_RUC_DE_FACTURA SET Direccion="%s"
+                    WHERE RUC_Factura='%s';''' % (nuevaDireccion, RUC)
+                    if respuesta["rollback"]=="True":
+                        mensajeDialogo("error", "Error", str(respuesta["respuesta"]))
+                        return
+                leDireccion.setText(nuevaDireccion)
+
 #--------------------------------Programa N° 11 - ERP_NOTAS----------------------------------
 
-def CargarFactNota(sql,tw,DescuentoGlobal,self):
+def CargarFactNota(sql,tw,self):
     tw.clearContents()
     informacion=consultarSql(sql)
     if informacion!=[]:
@@ -2965,14 +3002,52 @@ def CargarFactNota(sql,tw,DescuentoGlobal,self):
         flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         row=0
         for fila in informacion:
-            fila[7]='0.00'
-            fila[6]=fila[8]
-            PreciosinIGV=float(fila[6])*(1/(1+(porcentaje_de_igv/100)))
-            DescuentosinIGV=float(fila[7])*(1/(1+(porcentaje_de_igv/100)))
-            fila.insert(6,str(PreciosinIGV))
-            fila.insert(8,str(DescuentosinIGV))
+            fila[7]=fila[10]
+            fila[8]='0.00'
+            fila[9]='0.00'
+            fila[6]=float(fila[7])*(1/(1+(porcentaje_de_igv/100)))
+
             fila[5]=formatearDecimal(fila[5],'3')
-            fila[6]=formatearDecimal(fila[6],'4')
+            fila[6]=formatearDecimal(fila[6],'10')
+            fila[7]=formatearDecimal(fila[7],'2')
+            fila[8]=formatearDecimal(fila[8],'2')
+            fila[9]=formatearDecimal(fila[9],'2')
+            fila[10]=formatearDecimal(fila[10],'2')
+            fila[11]=formatearDecimal(fila[11],'2')
+            if fila[12]==None:
+                fila[12]='0.000'
+            else:
+                fila[12]=formatearDecimal(fila[12],'3')
+            if fila[13]==None:
+                fila[13]='0.000'
+            else:
+                fila[13]=formatearDecimal(fila[13],'3')
+            col=0
+            for i in fila:
+                item=QTableWidgetItem(i)
+                item.setFlags(flags)
+                if tw.rowCount()<=row:
+                    tw.insertRow(tw.rowCount())
+                tw.setItem(row,col, item)
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                tw.resizeColumnToContents(col)
+                col += 1
+            row+=1
+    else:
+        mensajeDialogo("informacion", "Información","No se encontraron registros")
+
+def CargarNota(sql,tw,DescuentoGlobal,self):
+    tw.clearContents()
+    informacion=consultarSql(sql)
+    if informacion!=[]:
+        rows=tw.rowCount()
+        for r in range(rows):
+            tw.removeRow(0)
+        flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+        row=0
+        for fila in informacion:
+            fila[5]=formatearDecimal(fila[5],'3')
+            fila[6]=formatearDecimal(fila[6],'10')
             fila[7]=formatearDecimal(fila[7],'2')
             fila[8]=formatearDecimal(fila[8],'2')
             fila[9]=formatearDecimal(fila[9],'2')
