@@ -3022,21 +3022,34 @@ def CargarFactNota(sql,tw,self):
                 fila[13]='0.000'
             else:
                 fila[13]=formatearDecimal(fila[13],'3')
-            col=0
+
+            pb = QPushButton("",tw)
+            if tw.rowCount()<=row:
+                tw.insertRow(tw.rowCount())
+            tw.setCellWidget(row, 0, pb)
+            cargarIcono(pb,'nuevo')
+            font = QtGui.QFont()
+            font.setPointSize(11)
+            font.setBold(True)
+            pb.setFont(font)
+            pb.setStyleSheet("background-color: rgb(255, 213, 79);")
+            pb.clicked.connect(self.EditarItem)
+            tw.resizeColumnToContents(0)
+            col=1
             for i in fila:
                 item=QTableWidgetItem(i)
                 item.setFlags(flags)
+                insertarFila(col,item,[6,7,8,9,10,11,12,13,14],[2,3],[1,4,5,15,16])
                 if tw.rowCount()<=row:
                     tw.insertRow(tw.rowCount())
                 tw.setItem(row,col, item)
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
                 tw.resizeColumnToContents(col)
                 col += 1
             row+=1
     else:
         mensajeDialogo("informacion", "Información","No se encontraron registros")
 
-def CargarNota(sql,tw,DescuentoGlobal,self):
+def CargarNota(sql,tw,self):
     tw.clearContents()
     informacion=consultarSql(sql)
     if informacion!=[]:
@@ -3061,14 +3074,30 @@ def CargarNota(sql,tw,DescuentoGlobal,self):
                 fila[13]='0.000'
             else:
                 fila[13]=formatearDecimal(fila[13],'3')
-            col=0
+
+
+            pb = QPushButton("",tw)
+            if tw.rowCount()<=row:
+                tw.insertRow(tw.rowCount())
+            tw.setCellWidget(row, 0, pb)
+            cargarIcono(pb,'nuevo')
+            font = QtGui.QFont()
+            font.setPointSize(11)
+            font.setBold(True)
+            pb.setFont(font)
+            pb.setStyleSheet("background-color: rgb(255, 213, 79);")
+            pb.clicked.connect(self.EditarItem)
+            pb.setEnabled(False)
+            tw.resizeColumnToContents(0)
+            col=1
+
             for i in fila:
                 item=QTableWidgetItem(i)
                 item.setFlags(flags)
+                insertarFila(col,item,[6,7,8,9,10,11,12,13,14],[2,3],[1,4,5,15,16])
                 if tw.rowCount()<=row:
                     tw.insertRow(tw.rowCount())
                 tw.setItem(row,col, item)
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
                 tw.resizeColumnToContents(col)
                 col += 1
             row+=1

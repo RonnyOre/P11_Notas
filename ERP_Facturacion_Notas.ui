@@ -669,7 +669,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
            </font>
           </property>
           <property name="toolTip">
-           <string>Factura</string>
+           <string>Relacionar Factura</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
@@ -689,7 +689,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
            </font>
           </property>
           <property name="toolTip">
-           <string>Boleta</string>
+           <string>Relacionar Boleta</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
@@ -1057,6 +1057,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;</string>
 background-color: rgb(255, 213, 79);
 }</string>
         </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
         <attribute name="horizontalHeaderVisible">
          <bool>true</bool>
         </attribute>
@@ -1087,6 +1090,18 @@ background-color: rgb(255, 213, 79);
         <attribute name="verticalHeaderStretchLastSection">
          <bool>false</bool>
         </attribute>
+        <column>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+        </column>
         <column>
          <property name="text">
           <string>Item</string>
@@ -2103,6 +2118,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <bold>true</bold>
            </font>
           </property>
+          <property name="toolTip">
+           <string>Grabar</string>
+          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
           </property>
@@ -2138,6 +2156,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="toolTip">
+           <string>Enviar a SUNAT</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
@@ -2175,6 +2196,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <bold>true</bold>
            </font>
           </property>
+          <property name="toolTip">
+           <string>Abrir PDF</string>
+          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
           </property>
@@ -2210,6 +2234,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="toolTip">
+           <string>Anular Documento</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
@@ -2247,6 +2274,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <bold>true</bold>
            </font>
           </property>
+          <property name="toolTip">
+           <string>Consultar Anulación</string>
+          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
           </property>
@@ -2282,6 +2312,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="toolTip">
+           <string>Imprimir</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>
@@ -2345,6 +2378,9 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="toolTip">
+           <string>Salir</string>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(255, 213, 79);</string>

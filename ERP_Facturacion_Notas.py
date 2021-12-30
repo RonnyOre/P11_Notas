@@ -252,6 +252,67 @@ class ERP_ArchivoXML(QDialog):
             mensajeDialogo('error', "Error", "Registro Ya Existe")
         self.close()
 
+class EditarItem(QDialog):
+    def __init__(self, listadata):
+        QDialog.__init__(self)
+        uic.loadUi("ERP_Editar_Item.ui",self)
+        global data
+        data=listadata
+
+        self.setWindowTitle("Editar Item " + data[0])
+        self.pbGrabar.clicked.connect(self.Grabar)
+        self.pbSalir.clicked.connect(self.Salir)
+        self.leCantidad.editingFinished.connect(self.Calculos)
+
+        cargarIcono(self.pbGrabar, 'grabar')
+        cargarIcono(self.pbSalir, 'salir')
+        cargarIcono(self, 'erp')
+
+        self.leCantidad.setText(data[5])
+        self.leUnidad.setText(data[4])
+        self.leUnidad.setReadOnly(True)
+        self.teDescripcion.setText(data[2])
+        self.teDescripcion.setReadOnly(True)
+        self.leValor_Unitario.setText(data[6])
+        Total_SinIGV=float(data[5].replace(",","" ))*float(data[6].replace(",","" ))
+        Subtotal=float(data[5].replace(",","" ))*float(data[10].replace(",","" ))
+        self.leIGV.setText(formatearDecimal(Subtotal-Total_SinIGV,'2'))
+        self.leIGV.setReadOnly(True)
+        self.leTotal.setText(data[11])
+        self.leTotal.setReadOnly(True)
+
+    def Calculos(self):
+        try:
+            validarNumero(self.leCantidad)
+            if len(self.leCantidad.text())!=0:
+
+                if float(self.leCantidad.text())<=float(data[5].replace(",","" )):
+                    Cantidad=self.leCantidad.text()
+                    self.leCantidad.setText(formatearDecimal(Cantidad,'3'))
+                    Total_SinIGV=float(Cantidad)*float(data[6].replace(",","" ))
+                    Subtotal=float(Cantidad)*float(data[10].replace(",","" ))
+                    self.leIGV.setText(formatearDecimal(Subtotal-Total_SinIGV,'2'))
+                    self.leTotal.setText(formatearDecimal(Subtotal,'2'))
+                else:
+                    mensajeDialogo('informacion','Información','Cantidad de Material superado')
+
+        except Exception as e:
+            mensajeDialogo('informacion','Información','La Cantidad debe ser una dato tipo entero o float')
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
+
+    def Grabar(self):
+        global datos
+        datos=[]
+        datos.append(self.leCantidad.text())
+        datos.append(self.leValor_Unitario.text())
+        datos.append(self.leTotal.text())
+        self.close()
+
+    def Salir(self):
+        self.close()
+
 class ERP_Facturacion_Notas(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -282,6 +343,8 @@ class ERP_Facturacion_Notas(QMainWindow):
         extraerFechaCalendario(self.deFecha_Emision, self.leFecha_Emision)
         self.leFecha_Emision.textChanged.connect(self.Fecha_Emision)
 
+        self.tbwCotizacion_Cliente.cellDoubleClicked.connect(self.EliminarItem)
+
         self.pbGrabar.clicked.connect(self.Grabar)
         self.pbEnviar_SUNAT.clicked.connect(self.botonEnviarSunat)
         self.pbAbrirPDF.clicked.connect(self.botonAbrirPdf)
@@ -296,7 +359,7 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     # def datosGenerales(self, codSoc, empresa, usuario):
     #     global Cod_Soc, Nom_Soc, Cod_Usuario
-    #     global dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT
+    #     global dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
     #     Cod_Soc = codSoc
     #     Nom_Soc = empresa
     #     Cod_Usuario = usuario
@@ -435,11 +498,6 @@ class ERP_Facturacion_Notas(QMainWindow):
                 self.cbMotivo.addItem(k)
                 self.cbMotivo.setCurrentIndex(-1)
 
-        # if len(NroDocumento)!=0:
-        #     if len(NroDocumento)==11:
-        #         if self.cbSerie.currentText()=='B001':
-        #             self.leRUC.setText(NroDocumento[2:10])
-
     def activarBusqueda(self):
         Serie=self.cbSerie.currentText()
         if Serie=='F001':
@@ -469,13 +527,13 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             for i in range(self.tbwCotizacion_Cliente.rowCount()):
                 try:
-                    columna8=self.tbwCotizacion_Cliente.item(i,8).text()
+                    columna8=self.tbwCotizacion_Cliente.item(i,9).text()
                     descuento_sinIGV = columna8.replace(",","")
                     list_descuento_sinIGV.append(float(descuento_sinIGV))
                 except:
                     list_descuento_sinIGV.append("")
                 try:
-                    columna11=self.tbwCotizacion_Cliente.item(i,11).text()
+                    columna11=self.tbwCotizacion_Cliente.item(i,12).text()
                     subtotal = columna11.replace(",","")
                     list_subtotal.append(float(subtotal))
                 except:
@@ -820,18 +878,18 @@ class ERP_Facturacion_Notas(QMainWindow):
                     for row in range(d):
 
                         # Detalle de Facturación
-                        Item=self.tbwCotizacion_Cliente.item(row,0).text()
-                        Cod_Material_Sunat=dicMatSUNAT[self.tbwCotizacion_Cliente.item(row,1).text()]
-                        Cod_Material=dicMat[self.tbwCotizacion_Cliente.item(row,2).text()]
-                        Marca=dicMarca[self.tbwCotizacion_Cliente.item(row,3).text()]
-                        Unidad=self.tbwCotizacion_Cliente.item(row,4).text()
-                        Cantidad=self.tbwCotizacion_Cliente.item(row,5).text().replace(",","")
-                        Precio_sin_IGV=self.tbwCotizacion_Cliente.item(row,6).text().replace(",","")
-                        Precio_con_IGV=self.tbwCotizacion_Cliente.item(row,7).text().replace(",","")
-                        Descuento_sin_IGV=self.tbwCotizacion_Cliente.item(row,8).text().replace(",","")
-                        Descuento_con_IGV=self.tbwCotizacion_Cliente.item(row,9).text().replace(",","")
-                        Precio_Final=self.tbwCotizacion_Cliente.item(row,10).text().replace(",","")
-                        Sub_Total=self.tbwCotizacion_Cliente.item(row,11).text().replace(",","")
+                        Item=self.tbwCotizacion_Cliente.item(row,1).text()
+                        Cod_Material_Sunat=dicMatSUNAT[self.tbwCotizacion_Cliente.item(row,2).text()]
+                        Cod_Material=dicMat[self.tbwCotizacion_Cliente.item(row,3).text()]
+                        Marca=dicMarca[self.tbwCotizacion_Cliente.item(row,4).text()]
+                        Unidad=self.tbwCotizacion_Cliente.item(row,5).text()
+                        Cantidad=self.tbwCotizacion_Cliente.item(row,6).text().replace(",","")
+                        Precio_sin_IGV=self.tbwCotizacion_Cliente.item(row,7).text().replace(",","")
+                        Precio_con_IGV=self.tbwCotizacion_Cliente.item(row,8).text().replace(",","")
+                        Descuento_sin_IGV=self.tbwCotizacion_Cliente.item(row,9).text().replace(",","")
+                        Descuento_con_IGV=self.tbwCotizacion_Cliente.item(row,10).text().replace(",","")
+                        Precio_Final=self.tbwCotizacion_Cliente.item(row,11).text().replace(",","")
+                        Sub_Total=self.tbwCotizacion_Cliente.item(row,12).text().replace(",","")
 
                         sqlDetalle='''INSERT INTO TAB_VENTA_012_Detalle_Notas(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Item, Cod_Material, Cod_Material_Sunat, Marca, Unidad, Cantidad, Precio_sin_IGV, Precio_con_IGV, Descuento_sin_IGV, Descuento_con_IGV, Precio_Final, Sub_Total, Fecha_Reg, Hora_Reg, Usuario_Reg)
                         VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')'''%(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Item, Cod_Material, Cod_Material_Sunat, Marca, Unidad, Cantidad, Precio_sin_IGV, Precio_con_IGV, Descuento_sin_IGV, Descuento_con_IGV, Precio_Final, Sub_Total, Fecha, Hora, Cod_Usuario)
@@ -892,7 +950,7 @@ class ERP_Facturacion_Notas(QMainWindow):
             WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoNota, SerieNota,NroNota)
             lista=convlist(sqlCabNota)
 
-            sqlDetNota='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, c.Unidad_SUNAT, a.Cantidad, a.Precio_sin_IGV, a.Precio_con_IGV, a.Descuento_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
+            sqlDetNota='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, a.Unidad, a.Cantidad, a.Precio_sin_IGV, a.Precio_con_IGV, a.Descuento_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
             FROM TAB_VENTA_012_Detalle_Notas a
             LEFT JOIN TAB_MAT_001_Catalogo_Materiales b ON b.Cod_Soc=a.Cod_Soc AND b.Cod_Mat=a.Cod_Material
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
@@ -999,7 +1057,7 @@ class ERP_Facturacion_Notas(QMainWindow):
                     else:
                         self.pbAbrirPDF.setEnabled(True)
 
-            CargarNota(sqlDetNota,self.tbwCotizacion_Cliente, lista[14],self)
+            CargarNota(sqlDetNota,self.tbwCotizacion_Cliente,self)
             self.cargarMontos()
 
         except Exception as e:
@@ -1114,11 +1172,68 @@ class ERP_Facturacion_Notas(QMainWindow):
             numero=self.leNumero.text()
             validarAnulacion(Cod_Soc, dicTipFact[Cod_Soc], Año, tipo_de_comprobante, serie, numero, NomTabla, self)
 
+
+    def EliminarItem(self):
+        try:
+            Item=self.tbwCotizacion_Cliente.item(self.tbwCotizacion_Cliente.currentRow(),1).text()
+            resultado=mensajeDialogo("pregunta","Eliminar", "¿Seguro que desea eliminar el item " + Item + "?")
+            if resultado == 'Yes':
+                self.tbwCotizacion_Cliente.removeRow(self.tbwCotizacion_Cliente.currentRow())
+
+                flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+
+                fila=self.tbwCotizacion_Cliente.rowCount()
+                for i in range(fila):
+                    sigItem=int(i)+1
+                    sItem=QTableWidgetItem(str(sigItem))
+                    sItem.setFlags(flags)
+                    sItem.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+                    self.tbwCotizacion_Cliente.setItem(i,1, sItem)
+                    self.tbwCotizacion_Cliente.resizeColumnToContents(1)
+
+                self.cargarMontos()
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
+
+    def EditarItem(self):
+        try:
+            data=[]
+            NumCol=self.tbwCotizacion_Cliente.columnCount()
+            for col in range(NumCol):
+                if col!=0:
+                    item=self.tbwCotizacion_Cliente.item(self.tbwCotizacion_Cliente.currentRow(),col).text()
+                    data.append(item)
+
+            EditarItem(data).exec_()
+            flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            item1=QTableWidgetItem(datos[0])
+            item1.setFlags(flags)
+            item1.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+            self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),6, item1)
+            self.tbwCotizacion_Cliente.resizeColumnToContents(6)
+            item2=QTableWidgetItem(datos[2])
+            item2.setFlags(flags)
+            item2.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+            self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),12, item2)
+            self.tbwCotizacion_Cliente.resizeColumnToContents(12)
+
+            self.cargarMontos()
+
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
+
     def nota_credito_o_debito(self):
         if self.cbTipo_Nota.currentText() == 'NOTA DE CRÉDITO':
             self.notaCreditoManual()
         if self.cbTipo_Nota.currentText() == 'NOTA DE DÉBITO':
             self.notaDebitoManual()
+
 
     def notaCreditoManual(self):
         print('Impresión Manual Nota de Crédito')
