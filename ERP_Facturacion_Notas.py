@@ -385,14 +385,14 @@ class ERP_Facturacion_Notas(QMainWindow):
         QMainWindow.__init__(self)
         uic.loadUi("ERP_Facturacion_Notas.ui",self)
 
-        # global Cod_Soc,Nom_Soc,Cod_Usuario
-        # global dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
+        global Cod_Soc,Nom_Soc,Cod_Usuario
+        global dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
 
         # Cod_Soc='1000'
         # Nom_Soc='MULTI PLAY TELECOMUNICACIONES S.A.C'
-        # Cod_Soc='2000'
-        # Nom_Soc='MULTICABLE PERU S.A.C.'
-        # Cod_Usuario='2021100004'
+        Cod_Soc='2000'
+        Nom_Soc='MULTICABLE PERU S.A.C.'
+        Cod_Usuario='2021100004'
 
         self.cbTipo_Nota.activated.connect(self.cargarSerie)
         self.cbSerie.activated.connect(self.activarBusqueda)
@@ -427,12 +427,12 @@ class ERP_Facturacion_Notas(QMainWindow):
         global dict_DatosItems
         dict_DatosItems = {}
 
-    def datosGenerales(self, codSoc, empresa, usuario):
-        global Cod_Soc, Nom_Soc, Cod_Usuario
-        global dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
-        Cod_Soc = codSoc
-        Nom_Soc = empresa
-        Cod_Usuario = usuario
+    # def datosGenerales(self, codSoc, empresa, usuario):
+    #     global Cod_Soc, Nom_Soc, Cod_Usuario
+    #     global dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
+    #     Cod_Soc = codSoc
+    #     Nom_Soc = empresa
+    #     Cod_Usuario = usuario
 
         self.cargarCombos()
         self.tipoCambio()

@@ -3017,12 +3017,12 @@ def CargarFactNota(sql,tw,DescuentoGlobal,self):
             Constante=float(DescuentoGlobal)*1.18/PfSum
             fila[11]=float(fila[11])-(float(fila[10])*Constante)
             fila[10]=fila[11]/float(fila[5])
-            print(fila[10])
-
+            fila[10]=round(fila[10],2)
             fila[7]=fila[10]
             fila[8]='0.00'
             fila[9]='0.00'
             fila[6]=float(fila[7])*(1/(1+(porcentaje_de_igv/100)))
+            fila[11]=float(fila[5])*fila[10]
 
             fila[5]=formatearDecimal(fila[5],'3')
             fila[6]=formatearDecimal(fila[6],'10')
