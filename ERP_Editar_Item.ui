@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
+    <width>499</width>
     <height>348</height>
    </rect>
   </property>
@@ -51,7 +51,7 @@
         <widget class="QLabel" name="label_20">
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>170</width>
            <height>0</height>
           </size>
          </property>
@@ -90,7 +90,7 @@
         <widget class="QLabel" name="label_21">
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>170</width>
            <height>0</height>
           </size>
          </property>
@@ -129,7 +129,7 @@
         <widget class="QLabel" name="label_24">
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>170</width>
            <height>0</height>
           </size>
          </property>
@@ -171,7 +171,7 @@
         <widget class="QLabel" name="label_23">
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>170</width>
            <height>0</height>
           </size>
          </property>
@@ -186,51 +186,12 @@
           <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
          </property>
          <property name="text">
-          <string>Valor Unitario:</string>
+          <string>Precio sin IGV:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="leValor_Unitario">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <item>
-        <widget class="QLabel" name="label_22">
-         <property name="minimumSize">
-          <size>
-           <width>160</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-         </property>
-         <property name="text">
-          <string>IGV(0.18 %):</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="leIGV">
+        <widget class="QLineEdit" name="lePrecioLista">
          <property name="font">
           <font>
            <pointsize>11</pointsize>
@@ -249,7 +210,7 @@
         <widget class="QLabel" name="label_25">
          <property name="minimumSize">
           <size>
-           <width>160</width>
+           <width>170</width>
            <height>0</height>
           </size>
          </property>
@@ -264,12 +225,51 @@
           <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
          </property>
          <property name="text">
-          <string>Total:</string>
+          <string>Precio Final (con IGV):</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="leTotal">
+        <widget class="QLineEdit" name="lePrecioFinal">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QLabel" name="label_26">
+         <property name="minimumSize">
+          <size>
+           <width>170</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+         </property>
+         <property name="text">
+          <string>Sub Total (con IGV):</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="leSubTotal">
          <property name="font">
           <font>
            <pointsize>11</pointsize>
@@ -305,7 +305,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pbGrabar">
+        <widget class="QPushButton" name="pbAceptar">
          <property name="font">
           <font>
            <pointsize>11</pointsize>
@@ -314,13 +314,16 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Grabar</string>
+          <string>Aceptar</string>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(255, 213, 79);</string>
          </property>
          <property name="text">
-          <string>Grabar</string>
+          <string>Aceptar</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -354,6 +357,9 @@
          </property>
          <property name="text">
           <string>Salir</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -402,6 +408,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leCantidad</tabstop>
+  <tabstop>leUnidad</tabstop>
+  <tabstop>teDescripcion</tabstop>
+  <tabstop>lePrecioLista</tabstop>
+  <tabstop>lePrecioFinal</tabstop>
+  <tabstop>leSubTotal</tabstop>
+  <tabstop>pbAceptar</tabstop>
+  <tabstop>pbSalir</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

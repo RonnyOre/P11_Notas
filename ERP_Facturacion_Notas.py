@@ -64,12 +64,16 @@ class SeleccionarNota(QDialog):
         FROM TAB_VENTA_011_Cabecera_Notas a
         LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
         LEFT JOIN TAB_VENTA_012_Detalle_Notas c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'
-        GROUP BY c.Nro_Facturacion'''%(Cod_Soc,Año,Tiponota,Serienota)
+        WHERE a.Cod_Soc='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Estado_Factura!='0'
+        GROUP BY c.Nro_Facturacion'''%(Cod_Soc,Tiponota,Serienota)
+        # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'
+        # GROUP BY c.Nro_Facturacion'''%(Cod_Soc,Año,Tiponota,Serienota)
         Nota=consultarSql(sqlNota)
 
         self.twNotas.clear()
         for fila in Nota:
+            fila[2]=formatearFecha(fila[2])
+            fila[5]=formatearDecimal(fila[5], '2')
             try:
                 fila[6]=EstadoFactura[fila[6]]
             except:
@@ -107,17 +111,22 @@ class SeleccionarFacturacion(QDialog):
 
         cargarIcono(self, 'erp')
 
-        sqlFac='''SELECT a.Serie, a.Nro_Facturacion, a.Fecha_Emision, b.Razon_social, a.RUC, SUM(c.Sub_Total), a.Estado_Factura, a.Razon_Social_Fact
+        sqlFac='''SELECT a.Serie, a.Nro_Facturacion, a.Fecha_Emision, b.Razon_social, a.RUC, SUM(c.Sub_Total), a.Estado_Factura, a.Razon_Social_Fact, a.Descuento_Global
         FROM TAB_VENTA_009_Cabecera_Facturacion a
         LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
         LEFT JOIN TAB_VENTA_010_Detalle_Facturacion c ON a.Cod_Soc=c.Cod_Soc AND a.Año=c.Año AND a.Tipo_Comprobante=c.Tipo_Comprobante AND a.Serie=c.Serie AND a.Nro_Facturacion=c.Nro_Facturacion
-        WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
+        WHERE a.Cod_Soc='%s' AND a.Tipo_Comprobante='%s' AND a.Estado_Factura!='0'
         GROUP BY c.Nro_Facturacion
-        ORDER BY a.Nro_Facturacion DESC, a.Fecha_Emision DESC;'''%(Cod_Soc,Año,TipoComprobante)
+        ORDER BY a.Nro_Facturacion DESC, a.Fecha_Emision DESC;'''%(Cod_Soc,TipoComprobante)
+        # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s'
+        # ORDER BY a.Nro_Facturacion DESC, a.Fecha_Emision DESC;'''%(Cod_Soc,Año,TipoComprobante)
         Fac=consultarSql(sqlFac)
 
         self.twFacturacion.clear()
         for fila in Fac:
+            Monto=float(fila[5])-(float(fila[8])*1.18)
+            fila[2]=formatearFecha(fila[2])
+            fila[5]=formatearDecimal(Monto, '2')
             try:
                 fila[6]=EstadoFactura[fila[6]]
             except:
@@ -158,8 +167,10 @@ class VerCuotas(QDialog):
 
         sqlCuotas='''SELECT Nro_correlativo,Monto_Deposito,Fecha_Limite_Deposito
         FROM TAB_VENTA_005_Cabecera_Operaciones_Bancarias_Por_Cotizacion
-        WHERE Cod_Soc='%s' AND Año_Cot_Client='%s' AND Cod_Cliente='%s' AND  Nro_Cot_Client='%s'
-        ORDER BY Nro_correlativo ASC''' %(Cod_Soc,Año,Cod_Cliente,Nro_Cotización)
+        WHERE Cod_Soc='%s' AND Cod_Cliente='%s' AND  Nro_Cot_Client='%s'
+        ORDER BY Nro_correlativo ASC''' %(Cod_Soc,Cod_Cliente,Nro_Cotización)
+        # WHERE Cod_Soc='%s' AND Año_Cot_Client='%s' AND Cod_Cliente='%s' AND  Nro_Cot_Client='%s'
+        # ORDER BY Nro_correlativo ASC''' %(Cod_Soc,Año,Cod_Cliente,Nro_Cotización)
         informacion=consultarSql(sqlCuotas)
 
         self.tbwCuotas.clearContents()
@@ -207,7 +218,8 @@ class ERP_ArchivoXML(QDialog):
         cargarIcono(self.pbSalir, 'salir')
         cargarIcono(self, 'erp')
 
-        sql = '''SELECT Enlace_Archivo FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (Cod_Soc, Año, TC, SF, NC)
+        sql = '''SELECT Enlace_Archivo FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (Cod_Soc, TC, SF, NC)
+        # sql = '''SELECT Enlace_Archivo FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (Cod_Soc, Año, TC, SF, NC)
         info = convlist(sql)
         print(info,len(info))
         if info != [] and info != ['']:
@@ -230,14 +242,16 @@ class ERP_ArchivoXML(QDialog):
         sub = '/notas_multiplay'
         # sub = '/home/mutipla/public_html/pruebas'
         mismoNombre = True
-        sql = '''SELECT Enlace_Archivo FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (Cod_Soc, Año, TC, SF, NC)
+        sql = '''SELECT Enlace_Archivo FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (Cod_Soc, TC, SF, NC)
+        # sql = '''SELECT Enlace_Archivo FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (Cod_Soc, Año, TC, SF, NC)
         info = convlist(sql)
         if info == [] or info == ['']:
             nombreArchivo = SF + NC + '.xml'
             global ruta_web
             ruta_web = subirArchivoFTP(ruta, sub, nombreArchivo)
 
-            sqlArchivo='''UPDATE TAB_VENTA_011_Cabecera_Notas SET Enlace_Archivo='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (ruta_web, Cod_Soc, Año, TC, SF, NC)
+            sqlArchivo='''UPDATE TAB_VENTA_011_Cabecera_Notas SET Enlace_Archivo='%s' WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (ruta_web, Cod_Soc, TC, SF, NC)
+            # sqlArchivo='''UPDATE TAB_VENTA_011_Cabecera_Notas SET Enlace_Archivo='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';''' % (ruta_web, Cod_Soc, Año, TC, SF, NC)
             respuesta=ejecutarSql(sqlArchivo)
 
             if respuesta["respuesta"] == "correcto":
@@ -253,62 +267,115 @@ class ERP_ArchivoXML(QDialog):
         self.close()
 
 class EditarItem(QDialog):
-    def __init__(self, listadata):
+    def __init__(self,item,motivo):
         QDialog.__init__(self)
         uic.loadUi("ERP_Editar_Item.ui",self)
-        global data
-        data=listadata
+        global datos
+        datos=[]
 
-        self.setWindowTitle("Editar Item " + data[0])
-        self.pbGrabar.clicked.connect(self.Grabar)
+        global listaDatItem
+
+        self.setWindowTitle("Editar Item " + item)
+        self.leCantidad.editingFinished.connect(self.CalculosCantidad)
+        self.lePrecioFinal.editingFinished.connect(self.CalculosPrecio)
+        self.pbAceptar.clicked.connect(self.Grabar)
         self.pbSalir.clicked.connect(self.Salir)
-        self.leCantidad.editingFinished.connect(self.Calculos)
 
-        cargarIcono(self.pbGrabar, 'grabar')
+        cargarIcono(self.pbAceptar, 'activar')
         cargarIcono(self.pbSalir, 'salir')
         cargarIcono(self, 'erp')
 
-        self.leCantidad.setText(data[5])
-        self.leUnidad.setText(data[4])
-        self.leUnidad.setReadOnly(True)
-        self.teDescripcion.setText(data[2])
-        self.teDescripcion.setReadOnly(True)
-        self.leValor_Unitario.setText(data[6])
-        Total_SinIGV=float(data[5].replace(",","" ))*float(data[6].replace(",","" ))
-        Subtotal=float(data[5].replace(",","" ))*float(data[10].replace(",","" ))
-        self.leIGV.setText(formatearDecimal(Subtotal-Total_SinIGV,'2'))
-        self.leIGV.setReadOnly(True)
-        self.leTotal.setText(data[11])
-        self.leTotal.setReadOnly(True)
+        if motivo==5:
+            self.leCantidad.setReadOnly(True)
+        elif motivo==7:
+            self.lePrecioFinal.setReadOnly(True)
 
-    def Calculos(self):
+        datItem=dict_DatosItems[item]
+        listaDatItem= datItem.split("|")
+
+        self.teDescripcion.setText(listaDatItem[0])
+        self.teDescripcion.setReadOnly(True)
+        self.leUnidad.setText(listaDatItem[1])
+        self.leUnidad.setReadOnly(True)
+        self.leCantidad.setText(listaDatItem[2])
+        self.lePrecioLista.setText(listaDatItem[3])
+        self.lePrecioLista.setReadOnly(True)
+        self.lePrecioFinal.setText(listaDatItem[4])
+        self.leSubTotal.setText(listaDatItem[5])
+        self.leSubTotal.setReadOnly(True)
+        self.pbAceptar.setEnabled(False)
+
+    def CalculosCantidad(self):
         try:
             validarNumero(self.leCantidad)
             if len(self.leCantidad.text())!=0:
 
-                if float(self.leCantidad.text())<=float(data[5].replace(",","" )):
+                if float(self.leCantidad.text())<=float(listaDatItem[2]):
+                # if float(self.leCantidad.text())<float(listaDatItem[2]):
                     Cantidad=self.leCantidad.text()
                     self.leCantidad.setText(formatearDecimal(Cantidad,'3'))
-                    Total_SinIGV=float(Cantidad)*float(data[6].replace(",","" ))
-                    Subtotal=float(Cantidad)*float(data[10].replace(",","" ))
-                    self.leIGV.setText(formatearDecimal(Subtotal-Total_SinIGV,'2'))
-                    self.leTotal.setText(formatearDecimal(Subtotal,'2'))
+                    Subtotal=float(Cantidad)*float(listaDatItem[4].replace(",",""))
+                    self.leSubTotal.setText(formatearDecimal(Subtotal,'2'))
+                    self.pbAceptar.setEnabled(True)
+                # elif float(self.leCantidad.text())==float(listaDatItem[2]):
+                #     Cantidad=self.leCantidad.text()
+                #     self.leCantidad.setText(formatearDecimal(Cantidad,'3'))
+                #     self.pbAceptar.setEnabled(True)
                 else:
-                    mensajeDialogo('informacion','Información','Cantidad de Material superado')
+                    mensajeDialogo('informacion','Información','Cantidad de material superado, no se puede devolver')
+                    self.pbAceptar.setEnabled(False)
 
         except Exception as e:
-            mensajeDialogo('informacion','Información','La Cantidad debe ser una dato tipo entero o float')
+            mensajeDialogo('informacion','Información','El formato ingresado es incorrecto')
+            self.leCantidad.clear()
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(fname, exc_tb.tb_lineno, exc_type, e)
 
+    def CalculosPrecio(self):
+        try:
+            validarNumero(self.lePrecioFinal)
+            if len(self.lePrecioFinal.text())!=0:
+
+                # if float(self.lePrecioFinal.text())<float(listaDatItem[4]):
+                if float(self.lePrecioFinal.text())<=float(listaDatItem[4]):
+                    PrecioFinal=self.lePrecioFinal.text()
+                    self.lePrecioFinal.setText(formatearDecimal(PrecioFinal,'2'))
+                    Subtotal=float(listaDatItem[2].replace(",",""))*float(PrecioFinal)
+                    self.leSubTotal.setText(formatearDecimal(Subtotal,'2'))
+                    self.pbAceptar.setEnabled(True)
+                # elif float(self.lePrecioFinal.text())==float(listaDatItem[4]):
+                #     PrecioFinal=self.lePrecioFinal.text()
+                #     self.lePrecioFinal.setText(formatearDecimal(PrecioFinal,'2'))
+                #     self.pbAceptar.setEnabled(True)
+                else:
+                    mensajeDialogo('informacion','Información','El precio digitado debe ser menor al precio actual')
+                    self.pbAceptar.setEnabled(False)
+
+        except Exception as e:
+            mensajeDialogo('informacion','Información','El formato ingresado es incorrecto')
+            self.lePrecioFinal.clear()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
+
+
     def Grabar(self):
-        global datos
-        datos=[]
-        datos.append(self.leCantidad.text())
-        datos.append(self.leValor_Unitario.text())
-        datos.append(self.leTotal.text())
-        self.close()
+        try:
+            if len(self.leCantidad.text())!=0 and len(self.lePrecioFinal.text())!=0:
+                global datos
+                datos=[]
+                datos.append(self.leCantidad.text())
+                datos.append(self.lePrecioFinal.text())
+                datos.append(self.leSubTotal.text())
+                self.close()
+            else:
+                mensajeDialogo('informacion','Aceptar','No se pueden aceptar datos vacios')
+                self.pbAceptar.setEnabled(False)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
 
     def Salir(self):
         self.close()
@@ -318,14 +385,14 @@ class ERP_Facturacion_Notas(QMainWindow):
         QMainWindow.__init__(self)
         uic.loadUi("ERP_Facturacion_Notas.ui",self)
 
-        global Cod_Soc,Nom_Soc,Cod_Usuario
-        global dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
+        # global Cod_Soc,Nom_Soc,Cod_Usuario
+        # global dicCliente,dicFormaPago,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
 
         # Cod_Soc='1000'
         # Nom_Soc='MULTI PLAY TELECOMUNICACIONES S.A.C'
-        Cod_Soc='2000'
-        Nom_Soc='MULTICABLE PERU S.A.C.'
-        Cod_Usuario='2021100004'
+        # Cod_Soc='2000'
+        # Nom_Soc='MULTICABLE PERU S.A.C.'
+        # Cod_Usuario='2021100004'
 
         self.cbTipo_Nota.activated.connect(self.cargarSerie)
         self.cbSerie.activated.connect(self.activarBusqueda)
@@ -357,12 +424,15 @@ class ERP_Facturacion_Notas(QMainWindow):
         self.pbSelec_Factura.setEnabled(False)
         self.pbSelec_Boleta.setEnabled(False)
 
-    # def datosGenerales(self, codSoc, empresa, usuario):
-    #     global Cod_Soc, Nom_Soc, Cod_Usuario
-    #     global dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
-    #     Cod_Soc = codSoc
-    #     Nom_Soc = empresa
-    #     Cod_Usuario = usuario
+        global dict_DatosItems
+        dict_DatosItems = {}
+
+    def datosGenerales(self, codSoc, empresa, usuario):
+        global Cod_Soc, Nom_Soc, Cod_Usuario
+        global dicCliente,dicMoneda,dicMarca,dicMat,dicMatSUNAT,dicTipFact
+        Cod_Soc = codSoc
+        Nom_Soc = empresa
+        Cod_Usuario = usuario
 
         self.cargarCombos()
         self.tipoCambio()
@@ -379,8 +449,8 @@ class ERP_Facturacion_Notas(QMainWindow):
         cargarIcono(self.pbSelec_Nota, 'buscar')
         cargarIcono(self.pbSelec_Factura,'buscar')
         cargarIcono(self.pbSelec_Boleta,'buscar')
-        cargarIcono(self.pbLimpiar,'nuevo')
-        cargarIcono(self.pbEnviar_SUNAT, 'enviar')
+        cargarIcono(self.pbLimpiar,'borrar')
+        cargarIcono(self.pbEnviar_SUNAT, 'sunat')
         cargarIcono(self.pbAnular_Factura,'darbaja')
         cargarIcono(self.pbImprimir, 'imprimir')
         cargarIcono(self.pbConsulta_Anulacion,'buscar')
@@ -712,7 +782,8 @@ class ERP_Facturacion_Notas(QMainWindow):
             FROM TAB_VENTA_009_Cabecera_Facturacion a
             LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
             LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
+            WHERE a.Cod_Soc='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,TipoComprobante,Serie,Nro_Facturacion)
+            # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
             lista=convlist(sqlCabFact)
 
             sqlDetFact='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, a.Unidad, a.Cantidad, a.Precio_sin_IGV, a.Precio_con_IGV, a.Descuento_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
@@ -721,9 +792,11 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            WHERE a.Cod_Soc='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
             GROUP BY e.Cod_Mat
-            ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
+            ORDER BY a.Item ASC;'''%(Cod_Soc,TipoComprobante,Serie,Nro_Facturacion)
+            # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s'
+            # ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoComprobante,Serie,Nro_Facturacion)
 
             for i in range(len(lista)):
                 if lista[i]=='0':
@@ -746,8 +819,6 @@ class ERP_Facturacion_Notas(QMainWindow):
                 self.leSerie_Numero.setText(Serie+"-"+Nro_Facturacion)
                 self.botones()
 
-#############################################################
-
             if lista[10]!="" and lista[10]!=lista[0]:
                 self.leRazon_Social.setText(lista[10])
                 self.leDireccion.setText(lista[11])
@@ -755,8 +826,6 @@ class ERP_Facturacion_Notas(QMainWindow):
             else:
                 self.leRazon_Social.setText(lista[0])
                 self.leDireccion.setText(lista[1])
-
-#############################################################
 
             self.leRUC.setText(lista[2])
             self.leInterlocutor.setText(lista[3])
@@ -775,12 +844,16 @@ class ERP_Facturacion_Notas(QMainWindow):
 
             self.leMoneda.setText(lista[8])
 
-            self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
+            self.leDescuento_Global.setText('0.00')
+            # self.leDescuento_Global.setText(formatearDecimal(lista[9],'2'))
 
-            CargarFactNota(sqlDetFact,self.tbwCotizacion_Cliente,self)
+            CargarFactNota(sqlDetFact,self.tbwCotizacion_Cliente,lista[9],self)
             self.cargarMontos()
-
-            sqlVerificar="SELECT Doc_Modifica FROM TAB_VENTA_011_Cabecera_Notas WHERE Serie='%s' AND Estado_Factura !='1' AND Cod_Soc='%s' AND Año='%s';" %(Serie,Cod_Soc,Año)
+            ################################################################
+            self.LlenarDatosItem()
+            ################################################################
+            sqlVerificar="SELECT Doc_Modifica FROM TAB_VENTA_011_Cabecera_Notas WHERE Serie='%s' AND Estado_Factura !='1' AND Cod_Soc='%s';" %(Serie,Cod_Soc)
+            # sqlVerificar="SELECT Doc_Modifica FROM TAB_VENTA_011_Cabecera_Notas WHERE Serie='%s' AND Estado_Factura !='1' AND Cod_Soc='%s' AND Año='%s';" %(Serie,Cod_Soc,Año)
             guardadas=convlist(sqlVerificar)
             print(guardadas)
             if Serie+'-'+Nro_Facturacion in guardadas:
@@ -794,135 +867,167 @@ class ERP_Facturacion_Notas(QMainWindow):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(fname, exc_tb.tb_lineno, exc_type, e)
 
-    def Grabar(self):
+    def LlenarDatosItem(self):
+        global dict_DatosItems
+        dict_DatosItems={}
+
         try:
+            listafilas=[]
+            for i in range(self.tbwCotizacion_Cliente.rowCount()):
+                fila=[]
+                fila.append(self.tbwCotizacion_Cliente.item(i,1).text()) # Item
+                fila.append(self.tbwCotizacion_Cliente.item(i,3).text()) # Descripción Material
+                fila.append(self.tbwCotizacion_Cliente.item(i,5).text()) # Unidad
+                fila.append(self.tbwCotizacion_Cliente.item(i,6).text()) # Cantidad
+                fila.append(self.tbwCotizacion_Cliente.item(i,7).text()) # Precio sin IGV
+                fila.append(self.tbwCotizacion_Cliente.item(i,11).text()) # Precio Final
+                fila.append(self.tbwCotizacion_Cliente.item(i,12).text()) # Subtotal
+                listafilas.append(fila)
 
-            Fecha=datetime.datetime.now().strftime("%Y-%m-%d")
-            Hora=datetime.datetime.now().strftime("%H:%M:%S.%f")
-
-            tipo_nota=self.cbTipo_Nota.currentText()
-            Serie=self.cbSerie.currentText()
-            Motivo=self.cbMotivo.currentText()
-            if len(tipo_nota)!=0 and len(Serie)!=0:
-                Tipo_Comprobante=TipNota[tipo_nota]
-
-                TipComp_Modifica=TipoComprobante
-                texto=self.leSerie_Numero.text()
-                Serie_Modifica=texto[0:texto.find("-")]
-                NroFact_Modifica=texto[texto.find("-")+1:]
-
-                try:
-                    Cod_Cliente=dicCliente[self.leRazon_Social.text()]
-                    Razon_Social_Fact=""
-                    Direccion_Fact=""
-                except:
-                    Cod_Cliente=""
-                    Razon_Social_Fact=self.leRazon_Social.text()
-                    Direccion_Fact=self.leDireccion.text()
-
-                RUC=self.leRUC.text()
-
-                Interlocutor=self.leInterlocutor.text()
-                DNI_Interlocutor=self.leDNI.text()
-                Correo_Interlocutor=self.leCorreo.text()
-
-                #Eliminar cuando funcione
-                self.leCorreo.setReadOnly(False)
-
-                Tipo_Operacion=dict_sunat_transaction[self.cbTipo_Operacion.currentText()]
-
-                if self.leForma_Pago.text()=='CONTADO':
-                    Forma_Pago='1'
-                elif self.leForma_Pago.text()=='CRÉDITO':
-                    Forma_Pago='2'
-
-                Moneda=dicMoneda[self.leMoneda.text()]
-
-                Descuento_Global=self.leDescuento_Global.text().replace(",","")
-
-                if Tipo_Comprobante=='3':
-                    Motivo_Nota=dict_tipo_de_nota_de_credito[Motivo]
-                elif Tipo_Comprobante=='4':
-                    Motivo_Nota=dict_tipo_de_nota_de_debito[Motivo]
-
-                sqlCorrelativo="SELECT MAX(Nro_Facturacion) FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s'"%(Cod_Soc, Año, Tipo_Comprobante, Serie)
-                Nro_Actual=convlist(sqlCorrelativo)
-
-                if Nro_Actual[0]==None:
-                    Nro_Actual='1'
-                    Num_Actual=Nro_Actual.zfill(6)
-                else:
-                    Nro_Actual=int(Nro_Actual[0])
-                    Nro_Actual=str(Nro_Actual+1)
-                    Num_Actual=Nro_Actual.zfill(6)
-
-                self.leNumero.setText(Num_Actual)
-                self.leNumero.setReadOnly(True)
-                Nro_Facturacion=self.leNumero.text()
-
-                if len(self.leFecha_Emision.text())!=0:
-                    Fecha_Emision=formatearFecha(self.leFecha_Emision.text())
-                else:
-                    Fecha_Emision=Fecha
-                    self.leFecha_Emision.setText(formatearFecha(Fecha_Emision))
-
-                Estado_Factura='3'
-                self.leEstado_Documento.setText(EstadoFactura['3'])
-
-                sqlCabecera='''INSERT INTO TAB_VENTA_011_Cabecera_Notas(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Fecha_Emision, Estado_Factura, Fecha_Vencimiento, TipComp_Modifica, Serie_Modifica, NroFact_Modifica, Cod_Cliente, RUC, Interlocutor, DNI_Interlocutor, Correo_Interlocutor, Tipo_Operación, Forma_Pago, Moneda, Descuento_Global, Motivo_Nota, Fecha_Reg, Hora_Reg, Usuario_Reg) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')'''%(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Fecha_Emision, Estado_Factura, Fecha_Emision, TipComp_Modifica, Serie_Modifica, NroFact_Modifica, Cod_Cliente, RUC, Interlocutor, DNI_Interlocutor, Correo_Interlocutor, Tipo_Operacion, Forma_Pago, Moneda, Descuento_Global, Motivo_Nota, Fecha, Hora, Cod_Usuario)
-                accion=ejecutarSql(sqlCabecera)
-
-                if accion['respuesta']=='correcto':
-
-                    d=self.tbwCotizacion_Cliente.rowCount()
-                    for row in range(d):
-
-                        # Detalle de Facturación
-                        Item=self.tbwCotizacion_Cliente.item(row,1).text()
-                        Cod_Material_Sunat=dicMatSUNAT[self.tbwCotizacion_Cliente.item(row,2).text()]
-                        Cod_Material=dicMat[self.tbwCotizacion_Cliente.item(row,3).text()]
-                        Marca=dicMarca[self.tbwCotizacion_Cliente.item(row,4).text()]
-                        Unidad=self.tbwCotizacion_Cliente.item(row,5).text()
-                        Cantidad=self.tbwCotizacion_Cliente.item(row,6).text().replace(",","")
-                        Precio_sin_IGV=self.tbwCotizacion_Cliente.item(row,7).text().replace(",","")
-                        Precio_con_IGV=self.tbwCotizacion_Cliente.item(row,8).text().replace(",","")
-                        Descuento_sin_IGV=self.tbwCotizacion_Cliente.item(row,9).text().replace(",","")
-                        Descuento_con_IGV=self.tbwCotizacion_Cliente.item(row,10).text().replace(",","")
-                        Precio_Final=self.tbwCotizacion_Cliente.item(row,11).text().replace(",","")
-                        Sub_Total=self.tbwCotizacion_Cliente.item(row,12).text().replace(",","")
-
-                        sqlDetalle='''INSERT INTO TAB_VENTA_012_Detalle_Notas(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Item, Cod_Material, Cod_Material_Sunat, Marca, Unidad, Cantidad, Precio_sin_IGV, Precio_con_IGV, Descuento_sin_IGV, Descuento_con_IGV, Precio_Final, Sub_Total, Fecha_Reg, Hora_Reg, Usuario_Reg)
-                        VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')'''%(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Item, Cod_Material, Cod_Material_Sunat, Marca, Unidad, Cantidad, Precio_sin_IGV, Precio_con_IGV, Descuento_sin_IGV, Descuento_con_IGV, Precio_Final, Sub_Total, Fecha, Hora, Cod_Usuario)
-                        respuesta=ejecutarSql(sqlDetalle)
-
-                    if respuesta['respuesta']=='correcto':
-                        mensajeDialogo('informacion','Excelente','La ' + str(self.cbTipo_Nota.currentText()) + ' ' + str(self.cbSerie.currentText()) + '-' + str(self.leNumero.text()) + ' se grabo correctamente.')
-
-                        self.deFecha_Emision.setEnabled(False)
-
-                        self.pbGrabar.setEnabled(False)
-                        if dicTipFact[Cod_Soc]=='1' and Serie!='0001':
-                            self.pbEnviar_SUNAT.setEnabled(True)
-                        elif dicTipFact[Cod_Soc]=='1' and Serie=='0001':
-                            self.pbImprimir.setEnabled(True)
-                        elif dicTipFact[Cod_Soc]=='2' and Serie!='':
-                            self.pbEnviar_SUNAT.setEnabled(True)
-
-                    elif respuesta['respuesta']=='incorrecto':
-                        mensajeDialogo('error','Error','Ocurrio un problema, comuniquese con soporte')
-
-                elif accion['respuesta']=='incorrecto':
-                    mensajeDialogo('error','Error','No se pudo Grabar, Vuelva a intentarlo')
-
-            elif len(tipo_nota)!=0 and len(Serie)==0:
-                mensajeDialogo('informacion','Información','Seleccione Serie')
-
-            else:
-                mensajeDialogo('informacion','Información','Seleccione Tipo de Comprobante y la Serie')
+            for fila in listafilas:
+                dict_DatosItems[fila[0]]=fila[1]+'|'+fila[2]+'|'+fila[3]+'|'+fila[4]+'|'+fila[5]+'|'+fila[6]
 
         except Exception as e:
-            mensajeDialogo('error','Error','No se pudo Grabar, verifique los datos y vuelva a intentarlo')
-            print(e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
+
+
+    def Grabar(self):
+
+        resultado=mensajeDialogo("pregunta", "Grabar " + self.cbTipo_Nota.currentText() , " ¿Seguro que desea grabar la " + self.cbTipo_Nota.currentText() +"?\n\nUna vez grabado no se podrá modificar el documento")
+        if resultado=='Yes':
+
+            try:
+                Fecha=datetime.datetime.now().strftime("%Y-%m-%d")
+                Hora=datetime.datetime.now().strftime("%H:%M:%S.%f")
+
+                tipo_nota=self.cbTipo_Nota.currentText()
+                Serie=self.cbSerie.currentText()
+                Motivo=self.cbMotivo.currentText()
+                if len(tipo_nota)!=0 and len(Serie)!=0:
+                    Tipo_Comprobante=TipNota[tipo_nota]
+
+                    TipComp_Modifica=TipoComprobante
+                    texto=self.leSerie_Numero.text()
+                    Serie_Modifica=texto[0:texto.find("-")]
+                    NroFact_Modifica=texto[texto.find("-")+1:]
+
+                    try:
+                        Cod_Cliente=dicCliente[self.leRazon_Social.text()]
+                        Razon_Social_Fact=""
+                        Direccion_Fact=""
+                    except:
+                        Cod_Cliente=""
+                        Razon_Social_Fact=self.leRazon_Social.text()
+                        Direccion_Fact=self.leDireccion.text()
+
+                    RUC=self.leRUC.text()
+
+                    Interlocutor=self.leInterlocutor.text()
+                    DNI_Interlocutor=self.leDNI.text()
+                    Correo_Interlocutor=self.leCorreo.text()
+
+                    #Eliminar cuando funcione
+                    self.leCorreo.setReadOnly(False)
+
+                    Tipo_Operacion=dict_sunat_transaction[self.cbTipo_Operacion.currentText()]
+
+                    if self.leForma_Pago.text()=='CONTADO':
+                        Forma_Pago='1'
+                    elif self.leForma_Pago.text()=='CRÉDITO':
+                        Forma_Pago='2'
+
+                    Moneda=dicMoneda[self.leMoneda.text()]
+
+                    Descuento_Global=self.leDescuento_Global.text().replace(",","")
+
+                    if Tipo_Comprobante=='3':
+                        Motivo_Nota=dict_tipo_de_nota_de_credito[Motivo]
+                    elif Tipo_Comprobante=='4':
+                        Motivo_Nota=dict_tipo_de_nota_de_debito[Motivo]
+
+                    sqlCorrelativo="SELECT MAX(Nro_Facturacion) FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s'"%(Cod_Soc, Tipo_Comprobante, Serie)
+                    # sqlCorrelativo="SELECT MAX(Nro_Facturacion) FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s'"%(Cod_Soc, Año, Tipo_Comprobante, Serie)
+                    Nro_Actual=convlist(sqlCorrelativo)
+
+                    if Nro_Actual[0]==None:
+                        Nro_Actual='1'
+                        Num_Actual=Nro_Actual.zfill(6)
+                    else:
+                        Nro_Actual=int(Nro_Actual[0])
+                        Nro_Actual=str(Nro_Actual+1)
+                        Num_Actual=Nro_Actual.zfill(6)
+
+                    self.leNumero.setText(Num_Actual)
+                    self.leNumero.setReadOnly(True)
+                    Nro_Facturacion=self.leNumero.text()
+
+                    if len(self.leFecha_Emision.text())!=0:
+                        Fecha_Emision=formatearFecha(self.leFecha_Emision.text())
+                    else:
+                        Fecha_Emision=Fecha
+                        self.leFecha_Emision.setText(formatearFecha(Fecha_Emision))
+
+                    Estado_Factura='3'
+                    self.leEstado_Documento.setText(EstadoFactura['3'])
+
+                    sqlCabecera='''INSERT INTO TAB_VENTA_011_Cabecera_Notas(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Fecha_Emision, Estado_Factura, Fecha_Vencimiento, TipComp_Modifica, Serie_Modifica, NroFact_Modifica, Cod_Cliente, RUC, Interlocutor, DNI_Interlocutor, Correo_Interlocutor, Tipo_Operación, Forma_Pago, Moneda, Descuento_Global, Motivo_Nota, Fecha_Reg, Hora_Reg, Usuario_Reg) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')'''%(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Fecha_Emision, Estado_Factura, Fecha_Emision, TipComp_Modifica, Serie_Modifica, NroFact_Modifica, Cod_Cliente, RUC, Interlocutor, DNI_Interlocutor, Correo_Interlocutor, Tipo_Operacion, Forma_Pago, Moneda, Descuento_Global, Motivo_Nota, Fecha, Hora, Cod_Usuario)
+                    accion=ejecutarSql(sqlCabecera)
+
+                    if accion['respuesta']=='correcto':
+
+                        d=self.tbwCotizacion_Cliente.rowCount()
+                        for row in range(d):
+
+                            # Detalle de Facturación
+                            Item=self.tbwCotizacion_Cliente.item(row,1).text()
+                            Cod_Material_Sunat=dicMatSUNAT[self.tbwCotizacion_Cliente.item(row,2).text()]
+                            Cod_Material=dicMat[self.tbwCotizacion_Cliente.item(row,3).text()]
+                            Marca=dicMarca[self.tbwCotizacion_Cliente.item(row,4).text()]
+                            Unidad=self.tbwCotizacion_Cliente.item(row,5).text()
+                            Cantidad=self.tbwCotizacion_Cliente.item(row,6).text().replace(",","")
+                            Precio_sin_IGV=self.tbwCotizacion_Cliente.item(row,7).text().replace(",","")
+                            Precio_con_IGV=self.tbwCotizacion_Cliente.item(row,8).text().replace(",","")
+                            Descuento_sin_IGV=self.tbwCotizacion_Cliente.item(row,9).text().replace(",","")
+                            Descuento_con_IGV=self.tbwCotizacion_Cliente.item(row,10).text().replace(",","")
+                            Precio_Final=self.tbwCotizacion_Cliente.item(row,11).text().replace(",","")
+                            Sub_Total=self.tbwCotizacion_Cliente.item(row,12).text().replace(",","")
+
+                            sqlDetalle='''INSERT INTO TAB_VENTA_012_Detalle_Notas(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Item, Cod_Material, Cod_Material_Sunat, Marca, Unidad, Cantidad, Precio_sin_IGV, Precio_con_IGV, Descuento_sin_IGV, Descuento_con_IGV, Precio_Final, Sub_Total, Fecha_Reg, Hora_Reg, Usuario_Reg)
+                            VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')'''%(Cod_Soc, Año, Tipo_Comprobante, Serie, Nro_Facturacion, Item, Cod_Material, Cod_Material_Sunat, Marca, Unidad, Cantidad, Precio_sin_IGV, Precio_con_IGV, Descuento_sin_IGV, Descuento_con_IGV, Precio_Final, Sub_Total, Fecha, Hora, Cod_Usuario)
+                            respuesta=ejecutarSql(sqlDetalle)
+
+                        if respuesta['respuesta']=='correcto':
+                            mensajeDialogo('informacion','Excelente','La ' + str(self.cbTipo_Nota.currentText()) + ' ' + str(self.cbSerie.currentText()) + '-' + str(self.leNumero.text()) + ' se grabo correctamente.')
+
+                            self.deFecha_Emision.setEnabled(False)
+
+                            self.pbGrabar.setEnabled(False)
+                            if dicTipFact[Cod_Soc]=='1' and Serie!='0001':
+                                self.pbEnviar_SUNAT.setEnabled(True)
+                            elif dicTipFact[Cod_Soc]=='1' and Serie=='0001':
+                                self.pbImprimir.setEnabled(True)
+                            elif dicTipFact[Cod_Soc]=='2' and Serie!='':
+                                self.pbEnviar_SUNAT.setEnabled(True)
+
+                        elif respuesta['respuesta']=='incorrecto':
+                            mensajeDialogo('error','Error','Ocurrio un problema, comuniquese con soporte')
+
+                    elif accion['respuesta']=='incorrecto':
+                        mensajeDialogo('error','Error','No se pudo Grabar, Vuelva a intentarlo')
+
+                elif len(tipo_nota)!=0 and len(Serie)==0:
+                    mensajeDialogo('informacion','Información','Seleccione Serie')
+
+                else:
+                    mensajeDialogo('informacion','Información','Seleccione Tipo de Comprobante y la Serie')
+
+            except Exception as e:
+                mensajeDialogo('error','Error','No se pudo Grabar, verifique los datos y vuelva a intentarlo')
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(fname, exc_tb.tb_lineno, exc_type, e)
 
     def SeleccionarNota(self):
         global SerieNota,NroNota
@@ -947,7 +1052,8 @@ class ERP_Facturacion_Notas(QMainWindow):
             FROM TAB_VENTA_011_Cabecera_Notas a
             LEFT JOIN `TAB_COM_001_Maestro Clientes`b ON a.Cod_Cliente=b.Cod_cliente
             LEFT JOIN TAB_SOC_008_Monedas c ON a.Moneda=c.Cod_moneda
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoNota, SerieNota,NroNota)
+            WHERE a.Cod_Soc='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s';'''%(Cod_Soc,TipoNota, SerieNota,NroNota)
+            # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s'AND a.Nro_Facturacion='%s';'''%(Cod_Soc,Año,TipoNota, SerieNota,NroNota)
             lista=convlist(sqlCabNota)
 
             sqlDetNota='''SELECT a.Item,c.Descrip_SUNAT, b.Descrip_Mat, d.Descrip_Marca, a.Unidad, a.Cantidad, a.Precio_sin_IGV, a.Precio_con_IGV, a.Descuento_sin_IGV, a.Descuento_con_IGV, a.Precio_Final, a.Sub_Total, SUM(e.Stock_disponible), SUM(e.Stock_Bloq_con_QA),a.Cod_Material,b.Cod_Prod_SUNAT
@@ -956,8 +1062,10 @@ class ERP_Facturacion_Notas(QMainWindow):
             LEFT JOIN TAB_SOC_026_Tabla_productos_SUNAT c ON b.Cod_Prod_SUNAT=c.Cod_Sunat
             LEFT JOIN TAB_MAT_010_Marca_de_Producto d ON a.Marca=d.Cod_Marca
             LEFT JOIN TAB_MAT_002_Stock_Almacen e ON a.Cod_Soc=e.Cod_Soc AND a.Cod_Material=e.Cod_Mat
-            WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
-            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoNota,SerieNota,NroNota)
+            WHERE a.Cod_Soc='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
+            GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,TipoNota,SerieNota,NroNota)
+            # WHERE a.Cod_Soc='%s' AND a.Año='%s' AND a.Tipo_Comprobante='%s' AND a.Serie='%s' AND a.Nro_Facturacion='%s'
+            # GROUP BY e.Cod_Mat ORDER BY a.Item ASC;'''%(Cod_Soc,Año,TipoNota,SerieNota,NroNota)
 
             for i in range(len(lista)):
                 if lista[i]=='0':
@@ -1172,7 +1280,6 @@ class ERP_Facturacion_Notas(QMainWindow):
             numero=self.leNumero.text()
             validarAnulacion(Cod_Soc, dicTipFact[Cod_Soc], Año, tipo_de_comprobante, serie, numero, NomTabla, self)
 
-
     def EliminarItem(self):
         try:
             Item=self.tbwCotizacion_Cliente.item(self.tbwCotizacion_Cliente.currentRow(),1).text()
@@ -1192,6 +1299,7 @@ class ERP_Facturacion_Notas(QMainWindow):
                     self.tbwCotizacion_Cliente.resizeColumnToContents(1)
 
                 self.cargarMontos()
+                self.LlenarDatosItem()
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -1200,28 +1308,47 @@ class ERP_Facturacion_Notas(QMainWindow):
 
     def EditarItem(self):
         try:
-            data=[]
-            NumCol=self.tbwCotizacion_Cliente.columnCount()
-            for col in range(NumCol):
-                if col!=0:
-                    item=self.tbwCotizacion_Cliente.item(self.tbwCotizacion_Cliente.currentRow(),col).text()
-                    data.append(item)
+            try:
+                motivo=dict_tipo_de_nota_de_credito[self.cbMotivo.currentText()]
+                item=self.tbwCotizacion_Cliente.item(self.tbwCotizacion_Cliente.currentRow(),1).text()
+            except Exception as e:
+                mensajeDialogo('informacion','Editar Item','Para acceder por favor seleccione el motivo de la nota')
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(fname, exc_tb.tb_lineno, exc_type, e)
 
-            EditarItem(data).exec_()
-            flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-            item1=QTableWidgetItem(datos[0])
-            item1.setFlags(flags)
-            item1.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-            self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),6, item1)
-            self.tbwCotizacion_Cliente.resizeColumnToContents(6)
-            item2=QTableWidgetItem(datos[2])
-            item2.setFlags(flags)
-            item2.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-            self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),12, item2)
-            self.tbwCotizacion_Cliente.resizeColumnToContents(12)
+            if motivo==5 or motivo==7:
 
-            self.cargarMontos()
+                EditarItem(item,motivo).exec_()
+                flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
+                item1=QTableWidgetItem(datos[0])
+                item1.setFlags(flags)
+                item1.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),6, item1)
+                self.tbwCotizacion_Cliente.resizeColumnToContents(6)
+
+                item2=QTableWidgetItem(datos[1])
+                item2.setFlags(flags)
+                item2.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),8, item2)
+                self.tbwCotizacion_Cliente.resizeColumnToContents(8)
+
+                item3=QTableWidgetItem(datos[1])
+                item3.setFlags(flags)
+                item3.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),11, item3)
+                self.tbwCotizacion_Cliente.resizeColumnToContents(11)
+
+                item4=QTableWidgetItem(datos[2])
+                item4.setFlags(flags)
+                item4.setTextAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                self.tbwCotizacion_Cliente.setItem(self.tbwCotizacion_Cliente.currentRow(),12, item4)
+                self.tbwCotizacion_Cliente.resizeColumnToContents(12)
+
+                self.cargarMontos()
+            else:
+                mensajeDialogo('informacion','Editar Item','Sin acceso para el motivo de Nota')
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()

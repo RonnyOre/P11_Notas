@@ -2727,7 +2727,8 @@ def generarDocumento(Cod_Soc,TipFact,Año,tipo_de_comprobante, serie, numero, su
 
                     self.leURL.setText(enlace)
                     self.leURL.setReadOnly(True)
-                    sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, Año, dict_tipo_de_comprobante[tipo_de_comprobante], serie, numero)
+                    sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, dict_tipo_de_comprobante[tipo_de_comprobante], serie, numero)
+                    # sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, Año, dict_tipo_de_comprobante[tipo_de_comprobante], serie, numero)
                     respuesta=ejecutarSql(sql)
                     if respuesta["respuesta"]=="incorrecto":
                         mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2782,7 +2783,8 @@ def consultarDocumento(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, numer
 
             if self.leURL.text()!=enlace:
                 self.leURL.setText(enlace)
-                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc,Año, tipo_de_comprobante, serie, numero)
+                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, tipo_de_comprobante, serie, numero)
+                # sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc,Año, tipo_de_comprobante, serie, numero)
                 respuesta=ejecutarSql(sql)
                 if respuesta["respuesta"]=="incorrecto":
                     mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2834,7 +2836,8 @@ def consultarDocumentoError(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, 
             if self.leURL.text()!=enlace:
                 self.leURL.setText(enlace)
                 self.leURL.setReadOnly(True)
-                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';" % (NomTabla, enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
+                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';" % (NomTabla, enlace, Cod_Soc, tipo_de_comprobante, serie, numero)
+                # sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s';" % (NomTabla, enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
                 respuesta=ejecutarSql(sql)
                 if respuesta["respuesta"]=="incorrecto":
                     mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2912,7 +2915,8 @@ def validarAnulacion(Cod_Soc,TipFact, Año, tipo_de_comprobante, serie, numero, 
                 enlace="Documento rechazado"
             if self.leURL.text()!=enlace:
                 self.leURL.setText(enlace)
-                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
+                sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, tipo_de_comprobante, serie, numero)
+                # sql="UPDATE %s SET URL='%s' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, enlace, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
                 respuesta=ejecutarSql(sql)
                 if respuesta["respuesta"]=="incorrecto":
                     mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2955,7 +2959,8 @@ def validarAnulacionError(Cod_Soc, TipFact, Año, tipo_de_comprobante, serie, nu
 
 def anularDocumentoSQL(Cod_Soc, TipFact, Año, tabla, tipo_de_comprobante, ruta, serie, numero, NomTabla, self):
     try:
-        sql="UPDATE %s SET URL='%s', Estado_Factura='1' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, ruta, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
+        sql="UPDATE %s SET URL='%s', Estado_Factura='1' WHERE Cod_Soc='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, ruta, Cod_Soc, tipo_de_comprobante, serie, numero)
+        # sql="UPDATE %s SET URL='%s', Estado_Factura='1' WHERE Cod_Soc='%s' AND Año='%s' AND Tipo_Comprobante='%s' AND Serie='%s' AND Nro_Facturacion='%s'" % (NomTabla, ruta, Cod_Soc, Año, tipo_de_comprobante, serie, numero)
         respuesta=ejecutarSql(sql)
         if respuesta["respuesta"]=="incorrecto":
             mensajeDialogo("advertencia", "Error", str(respuesta["respuesta"]))
@@ -2992,16 +2997,28 @@ def actualizarDireccion(RUC, idEmpresa, leDireccion):
 
 #--------------------------------Programa N° 11 - ERP_NOTAS----------------------------------
 
-def CargarFactNota(sql,tw,self):
+def CargarFactNota(sql,tw,DescuentoGlobal,self):
     tw.clearContents()
+    rows=tw.rowCount()
+    for r in range(rows):
+        tw.removeRow(0)
     informacion=consultarSql(sql)
+    PfSum=0
     if informacion!=[]:
-        rows=tw.rowCount()
-        for r in range(rows):
-            tw.removeRow(0)
+        for fila in informacion:
+            PfSum += float(fila[10])
+
+    print(PfSum,type(PfSum))
+
+    if informacion!=[]:
         flags = (QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
         row=0
         for fila in informacion:
+            Constante=float(DescuentoGlobal)*1.18/PfSum
+            fila[11]=float(fila[11])-(float(fila[10])*Constante)
+            fila[10]=fila[11]/float(fila[5])
+            print(fila[10])
+
             fila[7]=fila[10]
             fila[8]='0.00'
             fila[9]='0.00'
