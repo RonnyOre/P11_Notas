@@ -2164,7 +2164,7 @@ font: 11pt &quot;MS Shell Dlg 2&quot;;
            <string notr="true">background-color: rgb(255, 213, 79);</string>
           </property>
           <property name="text">
-           <string>Enviar a SUNAT</string>
+           <string>Enviar SUNAT</string>
           </property>
          </widget>
         </item>
