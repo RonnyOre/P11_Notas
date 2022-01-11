@@ -434,12 +434,6 @@ class ERP_Facturacion_Notas(QMainWindow):
     #     Nom_Soc = empresa
     #     Cod_Usuario = usuario
 
-        self.cargarCombos()
-        self.tipoCambio()
-        self.botones()
-        self.cargarDiccionarios()
-        self.bloquearDatos()
-
         cargarLogo(self.lbLogo_Mp,'multiplay')
         cargarLogo(self.lbLogo_Soc, Cod_Soc)
         cargarIcono(self, 'erp')
@@ -486,6 +480,13 @@ class ERP_Facturacion_Notas(QMainWindow):
         dicMatSUNAT={}
         for dato in MaterialSUNAT:
             dicMatSUNAT[dato[0]]=dato[1]
+
+        self.cargarCombos()
+        self.tipoCambio()
+        self.botones()
+        self.cargarDiccionarios()
+        self.bloquearDatos()
+        self.pendientesEnvio()
 
     def botones(self):
         self.pbGrabar.setEnabled(False)
@@ -543,6 +544,32 @@ class ERP_Facturacion_Notas(QMainWindow):
         #     TipCamPro = convlist(sqlProvicional)
         #     self.leTipo_Cambio.setText(TipCamPro[0])
         #     self.leTipo_Cambio.setReadOnly(True)
+
+    def pendientesEnvio(self):
+        try:
+            dicTipComp={'3':'NOTA DE CRÉDITO','4':'NOTA DE DÉBITO'}
+            if dicTipFact[Cod_Soc]=='1':
+                sqlConsulta="SELECT URL, Tipo_Comprobante, Serie, Nro_Facturacion FROM TAB_VENTA_011_Cabecera_Notas WHERE Cod_Soc='%s' AND Estado_Factura!='0';" %(Cod_Soc)
+                PendientesEnvio=consultarSql(sqlConsulta)
+                ListaPendientes=[]
+                for comprobante in PendientesEnvio:
+                    if comprobante[0]=="" or comprobante[0]==None:
+                        TipComp=dicTipComp[comprobante[1]]
+                        ListaPendientes.append(TipComp+': '+ comprobante[2]+'-'+comprobante[3])
+
+                if len(ListaPendientes)==1:
+                    mensajeDialogo('advertencia','Pendiente de enviar a Sunat','Está pendiente de enviar a Sunat el siguiente documento:\n%s' %(ListaPendientes[0]))
+
+                elif len(ListaPendientes)>1:
+                    Docs = ", ".join(ListaPendientes)
+                    mensajeDialogo('advertencia','Pendiente de enviar a Sunat','Están pendientes de enviar a Sunat los siguientes documentos:\n%s'%(Docs))
+                else:
+                    print('Ningún documento pendiente de envio a SUNAT')
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(fname, exc_tb.tb_lineno, exc_type, e)
 
     def cargarSerie(self):
         self.cbSerie.clear()
